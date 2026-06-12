@@ -1,12 +1,11 @@
 @echo off
 echo Starting Backend...
-start cmd /k "cd backend && .\.venv\Scripts\uvicorn main:app --reload --port 8000"
-
+start cmd /k "cd backend && .venv\Scripts\python -m uvicorn main:app --reload --host 0.0.0.0 --port 8000"
 echo Starting Unified Frontend...
 start cmd /k "cd frontend && npm run dev -- --port 3000"
 
 echo Waiting for servers to start...
-timeout /t 3 /nobreak > nul
+ping 127.0.0.1 -n 4 > nul
 
 echo Opening browser tabs...
 start http://localhost:3000
