@@ -61,18 +61,39 @@ async def _ensure_bank_initialised(elder_id: int, elder_name: str, language: str
     bid = _bank_id(elder_id)
     if bid in _initialised_banks:
         return
+        
+    conditions = ""
+    location = ""
     try:
-        mission = (
-            f"I'm a caring check-in companion for {elder_name}, "
-            f"an elderly person who speaks {language} and lives with family support."
-        )
+        from database import engine
+        from sqlmodel import Session
+        from models import User
+        with Session(engine) as session:
+            elder = session.get(User, elder_id)
+            if elder:
+                conditions = elder.conditions or ""
+                location = elder.location or ""
+    except Exception as db_err:
+        logger.warning("Could not query elder details for Hindsight init: %s", db_err)
+        
+    try:
+        mission = f"I'm a caring check-in companion for {elder_name}"
+        if conditions:
+            mission += f", an elderly person with {conditions}"
+        if location:
+            mission += f" living in {location}"
+        mission += f". I converse in {language} and support their family caregiver network."
+
         directives_text = [
             "Always flag missed medication.",
             "Flag any mention of pain, dizziness, chest tightness, falls, or breathing difficulty.",
             "Never give a medical diagnosis.",
             "Respond with warmth, patience, and cultural sensitivity.",
-            "Summarise health concerns clearly so family members can act quickly.",
+            "Summarise health concerns clearly so family members can act quickly."
         ]
+        if conditions:
+            directives_text.append(f"Monitor compliance and complaints regarding: {conditions}.")
+            
         if hasattr(_client, "aset_mission"):
             await _client.aset_mission(bank_id=bid, mission=mission)
         elif hasattr(_client, "set_mission"):
@@ -85,7 +106,7 @@ async def _ensure_bank_initialised(elder_id: int, elder_name: str, language: str
             _client.set_directives(bank_id=bid, directives=directives_text)
 
         _initialised_banks.add(bid)
-        logger.info("Hindsight bank initialised for %s (bank_id=%s)", elder_name, bid)
+        logger.info("Hindsight bank initialised for %s (bank_id=%s) with mission: '%s'", elder_name, bid, mission)
     except Exception as exc:
         logger.warning("Could not initialise Hindsight bank for elder %d: %s", elder_id, exc)
 
