@@ -52,7 +52,7 @@ export default function Memories({ user, elderId, setCurrentTab }) {
 
       window.speechSynthesis.speak(utterance)
     } else {
-      alert("સ્પીચ સપોર્ટેડ નથી (Text-to-speech not supported).")
+      alert("Text-to-speech not supported in this browser.")
     }
   }
 
@@ -78,14 +78,14 @@ export default function Memories({ user, elderId, setCurrentTab }) {
         onClick={() => setCurrentTab('home')} 
         className="self-start bg-white hover:bg-orange-50/50 border-4 border-[#e8dcc4] text-[#8b5a2b] font-bold text-xl md:text-2xl py-3 px-6 rounded-full shadow-md flex items-center gap-3 transition-all active:scale-95"
       >
-        <span className="text-2xl md:text-3xl">⬅️</span> પાછા જાઓ (Back)
+        <span className="text-2xl md:text-3xl">⬅️</span> Back
       </button>
 
       {/* Header Card */}
       <div className="w-full bg-[#fdfbf7] border-4 border-[#e8dcc4] rounded-[2.5rem] p-8 text-center shadow-lg relative overflow-hidden">
         <div className="absolute top-0 right-0 w-24 h-24 bg-orange-100/30 rounded-full blur-2xl"></div>
-        <h2 className="text-4xl md:text-5xl font-display font-black text-[#5c4a3d] mb-2">સુગંધિત યાદો (Your Memories)</h2>
-        <p className="text-lg md:text-xl font-bold text-[#7a6352]">તમારા જીવનની સુંદર વાર્તાઓ અને મીઠી યાદો</p>
+        <h2 className="text-4xl md:text-5xl font-display font-black text-[#5c4a3d] mb-2">Your Memories</h2>
+        <p className="text-lg md:text-xl font-bold text-[#7a6352]">Your beautiful life stories and sweet memories</p>
       </div>
 
       {/* Memory Nook - Input & Actions */}
@@ -94,7 +94,7 @@ export default function Memories({ user, elderId, setCurrentTab }) {
       {/* Memories Feed */}
       <div className="w-full flex flex-col gap-6 mt-4">
         {loading ? (
-          <p className="text-xl md:text-2xl font-bold text-[#7a6352] animate-pulse">લોડ થઈ રહ્યું છે (Loading...)</p>
+          <p className="text-xl md:text-2xl font-bold text-[#7a6352] animate-pulse">Loading...</p>
         ) : memories.length === 0 ? (
           null
         ) : (
@@ -136,9 +136,9 @@ export default function Memories({ user, elderId, setCurrentTab }) {
                     )}
                     <span className="text-left font-extrabold">
                       {currentlyPlaying === m.id ? (
-                        <>અટકાવો (Pause)</>
+                        <>Pause</>
                       ) : (
-                        <>સાંભળો (Listen)</>
+                        <>Listen</>
                       )}
                     </span>
                   </button>

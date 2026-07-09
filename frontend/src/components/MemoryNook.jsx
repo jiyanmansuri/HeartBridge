@@ -11,8 +11,10 @@ export default function MemoryNook({ isFamilyView = false, user, elderId }) {
   const [dailyMemory, setDailyMemory] = useState(null)
   const [captionPhotoId, setCaptionPhotoId] = useState(null)
   const [isRecording, setIsRecording] = useState(false)
+  const [captionTranscript, setCaptionTranscript] = useState('')
   const mediaRecorderRef = useRef(null)
   const audioChunksRef = useRef([])
+  const recognitionRef = useRef(null)
   const fileInputRef = useRef(null)
   const captionFileInputRef = useRef(null)
   const [captionFile, setCaptionFile] = useState(null)
@@ -104,13 +106,30 @@ export default function MemoryNook({ isFamilyView = false, user, elderId }) {
     if (isRecording) {
       setIsRecording(false)
       if (mediaRecorderRef.current) mediaRecorderRef.current.stop()
+      if (recognitionRef.current) recognitionRef.current.stop()
     } else {
       setCaptionPhotoId(photoId)
+      let localTranscript = ''
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
         const mediaRecorder = new MediaRecorder(stream)
         mediaRecorderRef.current = mediaRecorder
         audioChunksRef.current = []
+
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+        if (SpeechRecognition) {
+          const rec = new SpeechRecognition()
+          rec.continuous = true
+          rec.interimResults = false
+          rec.lang = 'en-US'
+          rec.onresult = (e) => {
+            localTranscript = Array.from(e.results)
+              .map(res => res[0].transcript)
+              .join('')
+          }
+          recognitionRef.current = rec
+          rec.start()
+        }
 
         mediaRecorder.ondataavailable = (event) => {
           if (event.data.size > 0) audioChunksRef.current.push(event.data)
@@ -118,9 +137,15 @@ export default function MemoryNook({ isFamilyView = false, user, elderId }) {
 
         mediaRecorder.onstop = async () => {
           setLoading(true)
+          if (recognitionRef.current) {
+            try { recognitionRef.current.stop() } catch(e) {}
+          }
           const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' })
           const formData = new FormData()
           formData.append('audio', audioBlob, 'audio.webm')
+          if (localTranscript) {
+            formData.append('transcript', localTranscript)
+          }
           try {
             await fetch(`${API_BASE}/api/photo/${photoId}/caption`, {
               method: 'POST',
@@ -141,10 +166,10 @@ export default function MemoryNook({ isFamilyView = false, user, elderId }) {
     }
   }
   const features = [
-    { id: 1, titleGu: 'ફોટા/વિડિઓ ઉમેરો', titleEn: 'Add Photos/Videos', icon: Camera, descGu: 'તમારી કિંમતી પળો સુરક્ષિત રાખો.', descEn: 'Keep all your precious moments safe.' },
-    { id: 2, titleGu: 'પ્રસંગ મુજબ અલગ કરો', titleEn: 'Auto-Sort by Event', icon: CalendarDays, descGu: 'અમે તેને વ્યવસ્થિત ગોઠવીશું જેથી તમારે મહેનત ન કરવી પડે.', descEn: 'We organize them so you don’t have to.' },
-    { id: 3, titleGu: 'અવાજથી કૅપ્શન', titleEn: 'Voice Captioning', icon: Mic, descGu: 'ફોટા પાછળની વાર્તા ઉમેરવા માટે ફક્ત બોલો.', descEn: 'Simply talk to add the story behind the photo.' },
-    { id: 4, titleGu: 'આજની યાદ', titleEn: 'Daily ‘On This Day’ Memory', icon: History, descGu: 'દરરોજ સવારે ભૂતકાળની સુંદર યાદ સાથે જાગો.', descEn: 'Wake up to a beautiful memory from the past.' }
+    { id: 1, titleGu: 'Add Photos/Videos', titleEn: 'Add Photos/Videos', icon: Camera, descGu: 'Keep all your precious moments safe.', descEn: 'Keep all your precious moments safe.' },
+    { id: 2, titleGu: 'Auto-Sort by Event', titleEn: 'Auto-Sort by Event', icon: CalendarDays, descGu: 'We organize them so you don’t have to.', descEn: 'We organize them so you don’t have to.' },
+    { id: 3, titleGu: 'Voice Captioning', titleEn: 'Voice Captioning', icon: Mic, descGu: 'Simply talk to add the story behind the photo.', descEn: 'Simply talk to add the story behind the photo.' },
+    { id: 4, titleGu: 'Daily ‘On This Day’ Memory', titleEn: 'Daily ‘On This Day’ Memory', icon: History, descGu: 'Wake up to a beautiful memory from the past.', descEn: 'Wake up to a beautiful memory from the past.' }
   ]
 
   const handleCaptionFileChange = (e) => {
@@ -164,6 +189,23 @@ export default function MemoryNook({ isFamilyView = false, user, elderId }) {
       const mediaRecorder = new MediaRecorder(stream)
       mediaRecorderRef.current = mediaRecorder
       audioChunksRef.current = []
+      setCaptionTranscript('')
+
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+      if (SpeechRecognition) {
+        const rec = new SpeechRecognition()
+        rec.continuous = true
+        rec.interimResults = false
+        rec.lang = 'en-US'
+        rec.onresult = (e) => {
+          const text = Array.from(e.results)
+            .map(res => res[0].transcript)
+            .join('')
+          setCaptionTranscript(text)
+        }
+        recognitionRef.current = rec
+        rec.start()
+      }
 
       mediaRecorder.ondataavailable = (event) => {
         if (event.data.size > 0) audioChunksRef.current.push(event.data)
@@ -180,7 +222,7 @@ export default function MemoryNook({ isFamilyView = false, user, elderId }) {
       setCaptionAudioBlob(null)
     } catch (err) {
       console.error(err)
-      alert("માઇક્રોફોન ઍક્સેસ નથી (Microphone access failed)")
+      alert("Microphone access failed")
     }
   }
 
@@ -188,16 +230,19 @@ export default function MemoryNook({ isFamilyView = false, user, elderId }) {
     if (mediaRecorderRef.current && captionIsRecording) {
       mediaRecorderRef.current.stop()
       setCaptionIsRecording(false)
+      if (recognitionRef.current) {
+        try { recognitionRef.current.stop() } catch (e) {}
+      }
     }
   }
 
   const handleSaveVoiceCaptionMemory = async () => {
     if (!captionFile) {
-      alert("કૃપા કરીને ફોટો પસંદ કરો (Please select a photo first)")
+      alert("Please select a photo first")
       return
     }
     if (!captionAudioBlob) {
-      alert("કૃપા કરીને પહેલા અવાજ રેકોર્ડ કરો (Please record audio first)")
+      alert("Please record audio first")
       return
     }
 
@@ -217,6 +262,9 @@ export default function MemoryNook({ isFamilyView = false, user, elderId }) {
 
       const audioFormData = new FormData()
       audioFormData.append('audio', captionAudioBlob, 'audio.webm')
+      if (captionTranscript) {
+        audioFormData.append('transcript', captionTranscript)
+      }
       
       const captionRes = await fetch(`${API_BASE}/api/photo/${photoId}/caption`, {
         method: 'POST',
@@ -224,13 +272,13 @@ export default function MemoryNook({ isFamilyView = false, user, elderId }) {
       })
       if (!captionRes.ok) throw new Error("Caption upload failed")
       
-      alert("યાદ સફળતાપૂર્વક સાચવવામાં આવી! (Memory saved successfully!)")
+      alert("Memory saved successfully!")
       closeModal()
       fetchPhotos()
       fetchDailyMemory()
     } catch (e) {
       console.error(e)
-      alert("યાદ સાચવવામાં ભૂલ આવી (Error saving memory)")
+      alert("Error saving memory")
     }
     setLoading(false)
   }
@@ -254,11 +302,11 @@ export default function MemoryNook({ isFamilyView = false, user, elderId }) {
     >
       <div className="text-center mb-10">
         <h2 id="memory-nook-heading" className="text-4xl md:text-5xl font-display font-extrabold text-[#5c4a3d] mb-4 leading-tight drop-shadow-sm">
-          તમારી યાદો, હંમેશા તમારી સાથે.<br />
+          Your memories, always with you.<br />
           <span className="text-2xl md:text-3xl font-medium opacity-80">(Your Memories, Always With You.)</span>
         </h2>
         <p className="text-xl md:text-2xl text-[#7a6352] font-medium max-w-2xl mx-auto leading-relaxed">
-          સુગંધિત યાદો માં સ્વાગત છે. તમારા જીવનની સુંદર પળોને સાચવવાની અને પ્રિયજનો સાથે શેર કરવાની એક હૂંફાળી જગ્યા.<br />
+          Welcome to Memory Nook. A cozy place to save your life's beautiful moments and share them with loved ones.<br />
           <span className="text-lg md:text-xl opacity-80">(Welcome to the Memory Nook. A safe, warm place to gather your life's beautiful moments and share them with the ones you love.)</span>
         </p>
       </div>
@@ -334,7 +382,7 @@ export default function MemoryNook({ isFamilyView = false, user, elderId }) {
                           onClick={() => setSelectedEventTag(null)}
                           className="bg-white border border-[#e8dcc4] text-[#8b5a2b] font-bold text-base py-1.5 px-3 rounded-lg flex items-center gap-1.5 hover:bg-orange-50/50 transition-colors"
                         >
-                          ⬅️ પાછા જાઓ (Back to Events)
+                          Back to Events
                         </button>
                         
                         <input 
@@ -361,12 +409,12 @@ export default function MemoryNook({ isFamilyView = false, user, elderId }) {
                           htmlFor="event-specific-upload" 
                           className="cursor-pointer bg-[#769b76] hover:bg-[#5f805f] text-white font-bold text-sm py-1.5 px-3 rounded-lg flex items-center gap-1.5 transition-colors"
                         >
-                          <UploadCloud size={16} /> ફોટો ઉમેરો (Add Photo)
+                          <UploadCloud size={16} /> Add Photo
                         </label>
                       </div>
 
                       <h4 className="text-xl font-bold text-[#5c4a3d] capitalize mb-1">
-                        પ્રસંગ: {selectedEventTag} (Event: {selectedEventTag})
+                        Event: {selectedEventTag}
                       </h4>
                       
                       {(() => {
@@ -375,7 +423,7 @@ export default function MemoryNook({ isFamilyView = false, user, elderId }) {
                         if (photos.length === 0) {
                           return (
                             <p className="text-center text-gray-500 py-6 font-medium">
-                              આ પ્રસંગમાં હજી કોઈ ફોટા નથી. ફોટા ઉમેરવા માટે ઉપરનું બટન દબાવો!<br/>
+                              No photos in this event yet. Tap the button above to add photos!<br/>
                               (No photos in this event yet. Use button above to add!)
                             </p>
                           );
@@ -393,7 +441,7 @@ export default function MemoryNook({ isFamilyView = false, user, elderId }) {
                                   </p>
                                 ) : (
                                   <p className="text-sm text-gray-400 italic text-center p-1.5">
-                                    કોઈ કૅપ્શન નથી (No caption recorded)
+                                    No caption recorded
                                   </p>
                                 )}
                               </div>
@@ -410,7 +458,7 @@ export default function MemoryNook({ isFamilyView = false, user, elderId }) {
                           type="text" 
                           value={newEventName} 
                           onChange={e => setNewEventName(e.target.value)} 
-                          placeholder="નવા પ્રસંગનું નામ લખો... (New event name...)" 
+                          placeholder="New event name..." 
                           className="flex-1 px-3 py-1.5 border border-[#e8dcc4] rounded-lg text-sm focus:outline-none focus:border-[#d9774e] font-semibold text-[#5c4a3d]"
                         />
                         <button 
@@ -427,7 +475,7 @@ export default function MemoryNook({ isFamilyView = false, user, elderId }) {
                           }}
                           className="bg-[#d9774e] hover:bg-[#c2653e] text-white font-bold px-4 py-1.5 rounded-lg text-sm transition-colors whitespace-nowrap"
                         >
-                          પ્રસંગ બનાવો (Create)
+                          Create Event
                         </button>
                       </div>
 
@@ -454,7 +502,7 @@ export default function MemoryNook({ isFamilyView = false, user, elderId }) {
                                     <FolderHeart className="text-[#d9774e]" size={32} />
                                     <div>
                                       <h4 className="text-lg font-bold text-[#5c4a3d] capitalize">{tag}</h4>
-                                      <p className="text-sm text-[#7a6352] font-semibold">{count} ફોટા (Photos)</p>
+                                      <p className="text-sm text-[#7a6352] font-semibold">{count} Photos</p>
                                     </div>
                                   </div>
                                   <span className="text-xl text-[#d9774e]">➡️</span>
@@ -488,7 +536,7 @@ export default function MemoryNook({ isFamilyView = false, user, elderId }) {
                           onClick={() => captionFileInputRef.current?.click()}
                           className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer text-white font-bold text-base"
                         >
-                          બીજો ફોટો પસંદ કરો (Change Photo)
+                          Change Photo
                         </div>
                       </div>
                     ) : (
@@ -497,15 +545,15 @@ export default function MemoryNook({ isFamilyView = false, user, elderId }) {
                         className="w-full border border-dashed border-[#d9774e]/50 rounded-xl bg-white p-5 flex flex-col items-center justify-center cursor-pointer hover:bg-[#f9f2e8]/30 transition-colors text-center"
                       >
                         <UploadCloud size={36} className="text-[#d9774e] mb-1" />
-                        <p className="text-base font-bold text-[#5c4a3d] mb-0.5">૧. ફોટો પસંદ કરો (1. Choose Photo)</p>
-                        <p className="text-xs text-[#7a6352]">યાદ સાથે જોડાયેલો ફોટો અપલોડ કરો (Upload memory photo)</p>
+                        <p className="text-base font-bold text-[#5c4a3d] mb-0.5">1. Choose Photo</p>
+                        <p className="text-xs text-[#7a6352]">Upload memory photo</p>
                       </div>
                     )}
                   </div>
 
                   {/* Audio Recording Section */}
                   <div className="w-full flex flex-col items-center gap-3 text-center">
-                    <p className="text-base font-bold text-[#5c4a3d]">૨. અવાજ રેકોર્ડ કરો (2. Record Story)</p>
+                    <p className="text-base font-bold text-[#5c4a3d]">2. Record Story</p>
                     
                     {captionIsRecording ? (
                       <div className="flex flex-col items-center gap-2">
@@ -516,18 +564,18 @@ export default function MemoryNook({ isFamilyView = false, user, elderId }) {
                           <Square size={20} fill="white" />
                         </button>
                         <p className="text-sm font-bold text-red-600 animate-pulse">
-                          બોલવાનું શરૂ છે... અટકાવવા માટે દબાવો<br/>(Recording... Tap to stop)
+                          Recording... Tap to stop
                         </p>
                       </div>
                     ) : captionAudioBlob ? (
                       <div className="flex flex-col items-center gap-2 w-full bg-[#f9f2e8]/50 p-3 rounded-xl border border-[#e8dcc4] max-w-md">
-                        <p className="text-base font-bold text-green-700">✓ અવાજ રેકોર્ડ થયો છે! (Voice recorded!)</p>
+                        <p className="text-base font-bold text-green-700">✓ Voice recorded!</p>
                         <audio src={URL.createObjectURL(captionAudioBlob)} controls className="w-full" />
                         <button 
                           onClick={startCaptionRecording} 
                           className="text-base font-bold text-[#d9774e] hover:text-[#c2653e] mt-0.5 flex items-center gap-1.5"
                         >
-                          <Mic size={16} /> ફરીથી રેકોર્ડ કરો (Record again)
+                          <Mic size={16} /> Record again
                         </button>
                       </div>
                     ) : (
@@ -539,7 +587,7 @@ export default function MemoryNook({ isFamilyView = false, user, elderId }) {
                           <Mic size={24} />
                         </button>
                         <p className="text-base font-bold text-[#5c4a3d]">
-                          રેકોર્ડ કરવા માઇક દબાવો (Tap mic to record)
+                          Tap mic to record
                         </p>
                       </div>
                     )}
@@ -556,10 +604,10 @@ export default function MemoryNook({ isFamilyView = false, user, elderId }) {
                         {loading ? (
                           <>
                             <Loader2 className="animate-spin" size={28} /> 
-                            સાચવી રહ્યું છે... (Saving...)
+                            Saving...
                           </>
                         ) : (
-                          'યાદ સાચવો (Save Memory)'
+                          'Save Memory'
                         )}
                       </button>
                     </div>
@@ -578,21 +626,21 @@ export default function MemoryNook({ isFamilyView = false, user, elderId }) {
                       <p className="text-xl font-handwriting text-[#5c4a3d] p-2">
                         {(() => {
                           const year = dailyMemory.created_at ? new Date(dailyMemory.created_at).getFullYear() : 2019;
-                          const gujYear = String(year).replace(/[0-9]/g, w => '૦૧૨૩૪૫૬૭૮૯'[w]);
+                          const gujYear = year;
                           const eventTextEn = dailyMemory.transcript || dailyMemory.event_tag || "Beautiful Memory";
                           const gujMap = {
-                            "Holi": "હોળીની ઉજવણી",
-                            "Diwali": "દિવાળી મહોત્સવ",
-                            "Birthday": "જન્મદિવસની ઉજવણી",
-                            "Grandson's first birthday": "પૌત્રનો પ્રથમ જન્મદિવસ",
-                            "Misc": "સુંદર યાદ"
+                            "Holi": "Holi Celebration",
+                            "Diwali": "Diwali Festival",
+                            "Birthday": "Birthday Celebration",
+                            "Grandson's first birthday": "Grandson's first birthday",
+                            "Misc": "Beautiful Memory"
                           };
                           let eventTextGu = dailyMemory.transcript || "";
                           if (!eventTextGu && dailyMemory.event_tag) {
                             eventTextGu = gujMap[dailyMemory.event_tag] || dailyMemory.event_tag;
                           }
-                          if (!eventTextGu) eventTextGu = "સુંદર યાદ";
-                          return `On this day in ${year} – ${eventTextEn} (આજના દિવસે ${gujYear} માં – ${eventTextGu})`;
+                          if (!eventTextGu) eventTextGu = "Beautiful Memory";
+                          return `On this day in ${year} – ${eventTextEn}`;
                         })()}
                       </p>
                     </div>

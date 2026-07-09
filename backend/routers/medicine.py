@@ -7,6 +7,7 @@ from typing import Optional
 from database import get_session
 from models import Medicine, MedicineLog, User
 from utils import elder_heartbeats, emit_event
+from services import hindsight_service
 
 router = APIRouter(prefix="/api/medicine", tags=["medicine"])
 
@@ -57,6 +58,13 @@ def take_medicine(medicine_id: int, scheduled_at: str, user_id: int = 1, session
     
     if med and user:
         emit_event(session, "medicine_taken", user_id, user.family_group_id, {"medicine_name": med.name, "dose": med.dose})
+        # Retain medication adherence in Hindsight
+        hindsight_service.retain(
+            elder_id=user_id,
+            content=f"[Medication] {user.preferred_name or user.name} took {med.name} {med.dose} at {datetime.utcnow().strftime('%H:%M UTC')}",
+            elder_name=user.preferred_name or user.name,
+            language=user.language or "en",
+        )
         
     session.commit()
     return {"status": "ok"}

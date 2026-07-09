@@ -6,9 +6,9 @@ const features = [
   {
     id: 1,
     titleEn: "Grandma's Kitchen",
-    titleGu: "દાદીમાનું રસોડું",
+    titleGu: "Grandma's Kitchen",
     descEn: "Share your secret family recipes and the beautiful stories behind them.",
-    descGu: "તમારી ગુપ્ત કૌટુંબિક વાનગીઓ અને તેની પાછળની સુંદર વાર્તાઓ શેર કરો.",
+    descGu: "Share your secret family recipes and the beautiful stories behind them.",
     icon: UtensilsCrossed,
     color: "bg-[#e8dcc4] text-[#8b5a2b]", // Soft beige, dark terracotta
     borderColor: "border-[#d9c4a3]"
@@ -16,9 +16,9 @@ const features = [
   {
     id: 2,
     titleEn: "Tales from Our Roots",
-    titleGu: "આપણા મૂળની વાતો",
+    titleGu: "Tales from Our Roots",
     descEn: "Post folk tales and childhood memories. Listen to others using voice comments.",
-    descGu: "લોકકથાઓ and બાળપણની યાદો પોસ્ટ કરો. અવાજની ટિપ્પણીઓનો ઉપયોગ કરીને અન્ય લોકોને સાંભળો.",
+    descGu: "Post folklore and childhood memories. Listen to others using voice comments.",
     icon: BookOpen,
     color: "bg-[#dceddd] text-[#3c5a3d]", // Sage green, dark forest
     borderColor: "border-[#c4e0c6]"
@@ -26,9 +26,9 @@ const features = [
   {
     id: 3,
     titleEn: "Handmade & Heirlooms",
-    titleGu: "હાથ બનાવટ અને વારસો",
+    titleGu: "Handmade & Heirlooms",
     descEn: "Showcase your beautiful crafts, knitting, or traditional home remedies.",
-    descGu: "તમારી સુંદર હસ્તકલા, ગૂંથણકામ અથવા પરંપરાગત ઘરગથ્થુ ઉપચારોનું પ્રદર્શન કરો.",
+    descGu: "Showcase your beautiful handicrafts, knitting, or traditional home remedies.",
     icon: Scissors,
     color: "bg-[#f4dfd4] text-[#9b4a3a]", // Soft terracotta, dark red-brown
     borderColor: "border-[#eecbb9]"
@@ -36,9 +36,9 @@ const features = [
   {
     id: 4,
     titleEn: "Multilingual Support",
-    titleGu: "બહુભાષી સહાય",
+    titleGu: "Worldwide Stories",
     descEn: "Connect easily with friends! Everything auto-translates to your regional language.",
-    descGu: "મિત્રો સાથે સરળતાથી જોડાઓ! બધું આપમેળે તમારી પ્રાદેશિક ભાષામાં અનુવાદિત થાય છે.",
+    descGu: "Connect with friends worldwide! Sharing and learning is seamless.",
     icon: Languages,
     color: "bg-[#dcebf4] text-[#2c4e6b]", // Soft blue, dark navy
     borderColor: "border-[#b9d9ee]"
@@ -66,17 +66,17 @@ export default function WorldwideCircles({ user, initialCategory, onClearCategor
     const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000'
     
     const clientWordsMap = {
-      "hello": "નમસ્તે",
-      "how are you": "કેમ છો",
-      "good morning": "શુભ સવાર",
-      "good night": "શુભ રાત્રિ",
-      "water": "પાણી",
-      "food": "ખોરાક",
-      "medicine": "દવા",
-      "thank you": "આભાર",
-      "નમસ્તે": "Hello",
-      "કેમ છો": "How are you",
-      "શુભ સવાર": "Good morning"
+      "hello": "hello",
+      "how are you": "how are you",
+      "good morning": "good morning",
+      "good night": "good night",
+      "water": "water",
+      "food": "food",
+      "medicine": "medicine",
+      "thank you": "thank you",
+      "hello": "Hello",
+      "how are you": "How are you",
+      "good morning": "Good morning"
     }
     const normalized = text.toLowerCase().trim().replace(/[?!.]/g, "")
     if (clientWordsMap[normalized]) {
@@ -113,34 +113,34 @@ export default function WorldwideCircles({ user, initialCategory, onClearCategor
 
     // Robust client-side dictionary for instant translations
     const clientWordsMap = {
-      "hello": "નમસ્તે",
-      "how are you": "કેમ છો",
-      "good morning": "શુભ સવાર",
-      "good night": "શુભ રાત્રિ",
-      "water": "પાણી",
-      "food": "ખોરાક",
-      "medicine": "દવા",
-      "thank you": "આભાર",
-      "sky": "આકાશ",
-      "blue": "વાદળી",
-      "sun": "સૂર્ય",
-      "mother": "માતા",
-      "father": "પિતા",
-      "home": "ઘર",
-      "નમસ્તે": "Hello",
-      "કેમ છો": "How are you",
-      "શુભ સવાર": "Good morning",
-      "શુભ રાત્રિ": "Good night",
-      "પાણી": "Water",
-      "ખોરાક": "Food",
-      "દવા": "Medicine",
-      "આભાર": "Thank you",
-      "આકાશ": "Sky",
-      "વાદળી": "Blue",
-      "સૂર્ય": "Sun",
-      "માતા": "Mother",
-      "પિતા": "Father",
-      "ઘર": "Home"
+      "hello": "hello",
+      "how are you": "how are you",
+      "good morning": "good morning",
+      "good night": "good night",
+      "water": "water",
+      "food": "food",
+      "medicine": "medicine",
+      "thank you": "thank you",
+      "sky": "sky",
+      "blue": "blue",
+      "sun": "sun",
+      "mother": "mother",
+      "father": "father",
+      "home": "home",
+      "hello": "Hello",
+      "how are you": "How are you",
+      "good morning": "Good morning",
+      "good night": "Good night",
+      "water": "Water",
+      "food": "Food",
+      "medicine": "Medicine",
+      "thank you": "Thank you",
+      "sky": "Sky",
+      "blue": "Blue",
+      "sun": "Sun",
+      "mother": "Mother",
+      "father": "Father",
+      "home": "Home"
     }
 
     const normalized = text.toLowerCase().replace(/[?!.]/g, "")
@@ -245,7 +245,7 @@ export default function WorldwideCircles({ user, initialCategory, onClearCategor
         setPreviewUrl(null)
         setActiveModal(null)
         setIsFormExpanded(false)
-        setSuccessMessage('પોસ્ટ સફળતાપૂર્વક શેર કરી! (Post shared successfully!)')
+        setSuccessMessage("Post shared successfully!")
         fetchPosts()
         setTimeout(() => setSuccessMessage(''), 5000)
       })
@@ -301,11 +301,11 @@ export default function WorldwideCircles({ user, initialCategory, onClearCategor
             {/* Translator Section (Shown only for Multilingual Support at the top) */}
             {isTranslatorMode && (
               <div className="bg-[#fcfbf9] border-2 border-[#b9d9ee] rounded-2xl p-3 flex flex-col gap-2.5 shadow-sm">
-                <h3 className="text-xs font-black text-[#2c4e6b] uppercase tracking-wider">બહુભાષી અનુવાદક (Translator Tool)</h3>
+                <h3 className="text-xs font-black text-[#2c4e6b] uppercase tracking-wider">Translator Tool</h3>
                 
                 <div className="flex flex-col gap-1">
                   <span className="text-xs font-bold text-[#5c4a3d]">
-                    દિશા પસંદ કરો (Direction)
+                    Direction
                   </span>
                   <div className="flex gap-2">
                     <button
@@ -320,7 +320,7 @@ export default function WorldwideCircles({ user, initialCategory, onClearCategor
                           : 'bg-white border-[#f0e6d2] text-[#7a6352] hover:bg-gray-50'
                       }`}
                     >
-                      અંગ્રેજી ➡️ ગુજરાતી (EN ➡️ GU)
+                      Translate to English
                     </button>
                     <button
                       type="button"
@@ -334,14 +334,14 @@ export default function WorldwideCircles({ user, initialCategory, onClearCategor
                           : 'bg-white border-[#f0e6d2] text-[#7a6352] hover:bg-gray-50'
                       }`}
                     >
-                      ગુજરાતી ➡️ અંગ્રેજી (GU ➡️ EN)
+                      Translate to English
                     </button>
                   </div>
                 </div>
 
                 <div className="flex gap-1.5 items-end">
                   <div className="flex-1 flex flex-col gap-0.5">
-                    <span className="text-[10px] font-bold text-[#5c4a3d]">લખાણ લખો (Text to Translate)</span>
+                    <span className="text-[10px] font-bold text-[#5c4a3d]">Text to Translate</span>
                     <input
                       type="text"
                       value={translatorText}
@@ -360,23 +360,23 @@ export default function WorldwideCircles({ user, initialCategory, onClearCategor
                     disabled={isTranslating}
                     className="bg-[#2c4e6b] hover:bg-[#1e3549] disabled:bg-gray-400 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm"
                   >
-                    {isTranslating ? '...' : 'અનુવાદ (Translate)'}
+                    {isTranslating ? '...' : 'Translate'}
                   </button>
                 </div>
 
                 {translationResult && (
                   <div className="flex flex-col gap-0.5 bg-[#f4f7f9] border border-[#b9d9ee] rounded-lg p-2 animate-fade-in">
-                    <span className="text-[9px] font-black text-[#2c4e6b]">અનુવાદ કરેલ લખાણ (Result)</span>
+                    <span className="text-[9px] font-black text-[#2c4e6b]">Result</span>
                     <p className="text-sm font-bold text-[#111827] select-all leading-snug">{translationResult}</p>
                     <button
                       type="button"
                       onClick={() => {
                         navigator.clipboard.writeText(translationResult)
-                        alert("નકલ કરી! (Copied!)")
+                        alert("Copied!")
                       }}
                       className="self-end text-[10px] font-bold text-[#2c4e6b] hover:underline"
                     >
-                      નકલ કરો (Copy)
+                      Copy
                     </button>
                   </div>
                 )}
@@ -389,10 +389,10 @@ export default function WorldwideCircles({ user, initialCategory, onClearCategor
               return (
                 <div className="flex flex-col gap-2">
                   <h4 className="text-xs font-black text-[#5c4a3d] uppercase tracking-wider py-1 border-b border-orange-50 bg-white sticky top-0 z-10">
-                    આ કેટેગરીની વાર્તાઓ (Stories in this category)
+                    Stories in this category
                   </h4>
                   {categoryPosts.length === 0 ? (
-                    <p className="text-xs text-gray-400 font-bold italic py-4">આ કેટેગરીમાં હજી કોઈ પોસ્ટ નથી. (No posts in this category yet.)</p>
+                    <p className="text-xs text-gray-400 font-bold italic py-4">No posts in this category yet.</p>
                   ) : (
                     <div className="flex flex-col gap-2">
                       {categoryPosts.map(post => {
@@ -428,23 +428,23 @@ export default function WorldwideCircles({ user, initialCategory, onClearCategor
                 className="flex items-center justify-between p-2.5 bg-[#fdfbf7] border-2 border-[#e8dcc4] rounded-2xl cursor-pointer hover:bg-orange-50/20 transition-all shadow-sm"
               >
                 <span className="text-xs md:text-sm font-bold text-[#7a6352] flex items-center gap-2">
-                  ✏️ નવી પોસ્ટ લખો... (Write a new post...)
+                  Write a new post...
                 </span>
                 <span className="text-[10px] md:text-xs bg-[#d9774e] text-white px-2.5 py-1 rounded-xl font-black">
-                  ➕ લખો (Write)
+                  Write
                 </span>
               </div>
             ) : (
               /* Expanded Post Form */
               <form onSubmit={handleCreatePost} className="flex flex-col gap-2 animate-fade-in">
-                <h5 className="text-xs font-black text-[#5c4a3d]">નવી પોસ્ટ ઉમેરો (Add New Post)</h5>
+                <h5 className="text-xs font-black text-[#5c4a3d]">Add New Post</h5>
                 
                 <div className="flex gap-2 items-center">
                   <textarea
                     rows={1.5}
                     value={contentText}
                     onChange={(e) => setContentText(e.target.value)}
-                    placeholder="તમારા વિચારો લખો... (Write your post...)"
+                    placeholder="Write your post..."
                     required
                     className="flex-1 p-2 text-xs border border-[#f0e6d2] rounded-lg focus:outline-none focus:border-[#d9774e] text-elder-brown font-semibold bg-orange-50/10 resize-none"
                   />
@@ -487,14 +487,14 @@ export default function WorldwideCircles({ user, initialCategory, onClearCategor
                     }}
                     className="border border-[#f0e6d2] hover:bg-gray-50 text-[#5c4a3d] text-xs font-bold py-1 px-3 rounded-lg transition-all"
                   >
-                    રદ કરો (Cancel)
+                    Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={isSubmitting}
                     className="bg-[#d9774e] hover:bg-[#c2653e] disabled:bg-gray-400 text-white text-xs font-bold py-1 px-4 rounded-lg shadow-sm transition-all"
                   >
-                    {isSubmitting ? 'શેર...' : 'શેર કરો (Share)'}
+                    {isSubmitting ? 'Sharing...' : 'Share'}
                   </button>
                 </div>
               </form>
@@ -520,20 +520,18 @@ export default function WorldwideCircles({ user, initialCategory, onClearCategor
         <div className="absolute bottom-[-50px] right-[-50px] w-64 h-64 bg-[#769b76]/10 rounded-full blur-3xl pointer-events-none"></div>
         
         <h1 className="text-4xl md:text-6xl font-display font-extrabold text-[#5c4a3d] mb-4 leading-tight relative z-10">
-          वसुधैव कुटुम्बकम्<br/>
-          <span className="text-3xl md:text-4xl font-medium opacity-90 block mt-2">(Vasudhaiva Kutumbakam - The world is one family.)</span>
+          The World is One Family
         </h1>
         
         <p className="text-2xl md:text-3xl text-[#7a6352] font-medium max-w-3xl mx-auto leading-relaxed relative z-10 mt-6">
-          દુનિયાભરના મિત્રો સાથે તમારી સંસ્કૃતિ, કળા અને વાતો વહેંચો. એક નવી શરૂઆત કરો.<br/>
-          <span className="text-xl md:text-2xl opacity-90 block mt-2">(Share your culture, art, and stories with friends across the globe. Make a new beginning.)</span>
+          Share your stories, art, and traditions with friends worldwide. Start a new conversation.
         </p>
       </section>
 
       {/* Worldwide Feed Section */}
       <div className="border-t-4 border-[#f0e6d2] pt-8">
         <h2 className="text-4xl font-extrabold text-[#5c4a3d] mb-6 flex items-center gap-3">
-          <span>વિશ્વભરમાંથી વાર્તાઓ અને કલા (Worldwide Stories & Art)</span>
+          <span>Worldwide Stories & Art</span>
         </h2>
 
         {loading ? (
@@ -576,7 +574,7 @@ export default function WorldwideCircles({ user, initialCategory, onClearCategor
                       <div className="mt-1 pt-3 border-t border-dashed border-orange-100 flex flex-col gap-2">
                         {translatedPosts[post.id] ? (
                           <div className="bg-orange-50/15 border border-[#e8dcc4] p-3 rounded-2xl animate-fade-in text-left">
-                            <span className="text-xs font-black text-[#d9774e] uppercase block mb-1">અનુવાદ કરેલ પોસ્ટ (Translated Content)</span>
+                            <span className="text-xs font-black text-[#d9774e] uppercase block mb-1">Translated Content</span>
                             <p className="text-lg md:text-xl font-bold text-[#5c4a3d] leading-normal">{translatedPosts[post.id]}</p>
                           </div>
                         ) : (
@@ -585,7 +583,7 @@ export default function WorldwideCircles({ user, initialCategory, onClearCategor
                             onClick={() => translatePostText(post.id, post.content_text)}
                             className="self-start text-[#d9774e] hover:text-[#c2653e] font-black text-base flex items-center gap-1.5 hover:underline"
                           >
-                            🌐 ટિપ્પણીઓ / પોસ્ટનો અનુવાદ કરો (Translate comments / post)
+                            Translate comments / post
                           </button>
                         )}
                       </div>
@@ -613,10 +611,10 @@ export default function WorldwideCircles({ user, initialCategory, onClearCategor
       <div className="border-t-4 border-[#f0e6d2] pt-8 flex flex-col gap-4 w-full">
         <div className="text-left">
           <h2 className="text-3xl font-extrabold text-[#5c4a3d] flex items-center gap-3">
-            <span>વાર્તાઓ અને સંસ્કૃતિ શેર કરો (Share Stories & Culture)</span>
+            <span>Share Stories & Culture</span>
           </h2>
           <p className="text-xl text-[#7a6352] font-semibold mt-1">
-            નીચેની કોઈપણ કેટેગરી પસંદ કરો અને તમારી પોતાની વાર્તા, રેસીપી અથવા કલા શેર કરો.<br/>
+            Choose any category below to share your own story, recipe, or art.<br/>
             <span className="text-base opacity-90 block mt-0.5">(Select any category below to share your own story, recipe, or craft.)</span>
           </p>
         </div>

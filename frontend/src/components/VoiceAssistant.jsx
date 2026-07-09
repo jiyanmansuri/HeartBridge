@@ -13,7 +13,7 @@ if (typeof window !== 'undefined') {
 }
 
 export default function VoiceAssistant({ user, elderId, currentTab, setCurrentTab, medicines, appointments }) {
-  const userLanguage = user?.language || 'gu'
+  const userLanguage = user?.language || 'en'
   const lang = userLanguage === 'gu' ? 'gu-IN' : 'en-US'
 
   const [isListening, setIsListening] = useState(false)
@@ -40,10 +40,10 @@ export default function VoiceAssistant({ user, elderId, currentTab, setCurrentTa
     }, 6000)
   }
 
-  // Child-like caring titles: દાદી/દાદા (Grandma/Grandpa)
+  // Child-like caring titles: Grandma/Grandpa
   const getElderTitle = () => {
     if (userLanguage === 'gu') {
-      return user?.name?.toLowerCase().includes('hector') ? 'દાદા' : 'દાદી'
+      return user?.name?.toLowerCase().includes('hector') ? 'Grandpa' : 'Grandma'
     } else {
       return user?.name?.toLowerCase().includes('hector') ? 'Grandpa' : 'Grandma'
     }
@@ -55,11 +55,32 @@ export default function VoiceAssistant({ user, elderId, currentTab, setCurrentTa
       window.speechSynthesis.cancel()
       const utterance = new SpeechSynthesisUtterance(text)
       utterance.lang = lang
+      utterance.rate = 0.95  // Slightly slower for a more natural, conversational cadence
+      utterance.pitch = 1.02 // Mildly warmer pitch
       
       const voices = window.speechSynthesis.getVoices()
-      const matchingVoice = voices.find(voice => voice.lang.startsWith(userLanguage))
-      if (matchingVoice) {
-        utterance.voice = matchingVoice
+      const langVoices = voices.filter(voice => voice.lang.toLowerCase().startsWith(userLanguage.toLowerCase()))
+      
+      // Prioritize high-quality online neural and natural human voices first
+      const premiumVoiceKeywords = [
+        'microsoft aria',           // High-quality Edge neural voice
+        'google us english',         // High-quality Chrome neural voice
+        'google uk english female',  // High-quality UK voice
+        'samantha',                  // High-quality Apple natural voice
+        'female',
+        'zira',
+        'hazel'
+      ]
+      
+      let chosenVoice = null
+      for (const keyword of premiumVoiceKeywords) {
+        chosenVoice = langVoices.find(voice => voice.name.toLowerCase().includes(keyword))
+        if (chosenVoice) break
+      }
+      
+      chosenVoice = chosenVoice || langVoices[0]
+      if (chosenVoice) {
+        utterance.voice = chosenVoice
       }
       window.speechSynthesis.speak(utterance)
     }
@@ -71,11 +92,31 @@ export default function VoiceAssistant({ user, elderId, currentTab, setCurrentTa
       window.speechSynthesis.cancel()
       const utterance = new SpeechSynthesisUtterance(text)
       utterance.lang = lang
+      utterance.rate = 0.95
+      utterance.pitch = 1.02
       
       const voices = window.speechSynthesis.getVoices()
-      const matchingVoice = voices.find(voice => voice.lang.startsWith(userLanguage))
-      if (matchingVoice) {
-        utterance.voice = matchingVoice
+      const langVoices = voices.filter(voice => voice.lang.toLowerCase().startsWith(userLanguage.toLowerCase()))
+      
+      const premiumVoiceKeywords = [
+        'microsoft aria',
+        'google us english',
+        'google uk english female',
+        'samantha',
+        'female',
+        'zira',
+        'hazel'
+      ]
+      
+      let chosenVoice = null
+      for (const keyword of premiumVoiceKeywords) {
+        chosenVoice = langVoices.find(voice => voice.name.toLowerCase().includes(keyword))
+        if (chosenVoice) break
+      }
+      
+      chosenVoice = chosenVoice || langVoices[0]
+      if (chosenVoice) {
+        utterance.voice = chosenVoice
       }
       if (onEndCallback) {
         utterance.onend = () => {
@@ -110,7 +151,7 @@ export default function VoiceAssistant({ user, elderId, currentTab, setCurrentTa
   const checkPositiveResponse = (text) => {
     const t = text.toLowerCase().trim()
     if (userLanguage === 'gu') {
-      return t.includes('હા') || t.includes('લીધી') || t.includes('હા લીધી') || t.includes('પી લીધી') || t.includes('હા પીધી') || t.includes('ચોક્કસ') || t.includes('યસ')
+      return t.includes('yes') || t.includes('taken') || t.includes('took') || t.includes('sure') || t.includes('yeah') || t.includes('yep')
     } else {
       return t.includes('yes') || t.includes('yeah') || t.includes('take') || t.includes('taken') || t.includes('did') || t.includes('done') || t.includes('i did') || t.includes('i have') || t.includes('ok') || t.includes('sure')
     }
@@ -119,7 +160,7 @@ export default function VoiceAssistant({ user, elderId, currentTab, setCurrentTa
   const checkNegativeResponse = (text) => {
     const t = text.toLowerCase().trim()
     if (userLanguage === 'gu') {
-      return t.includes('ના') || t.includes('નથી') || t.includes('બાકી') || t.includes('નથી લીધી') || t.includes('ના બાકી') || t.includes('નો')
+      return t.includes('no') || t.includes('not') || t.includes('not yet') || t.includes('pending')
     } else {
       return t.includes('no') || t.includes('not') || t.includes('haven') || t.includes('dont') || t.includes('don\'t') || t.includes('not yet') || t.includes('skip')
     }
@@ -141,8 +182,8 @@ export default function VoiceAssistant({ user, elderId, currentTab, setCurrentTa
       
       const title = getElderTitle()
       const alertReply = userLanguage === 'gu'
-        ? `અરે રે ${title}, તમે હજી સુધી દવા નથી લીધી એટલે મેં અર્જુનને ફોન કરીને એલર્ટ મોકલી દીધો છે હોં! પ્લીઝ હવે તો દવા લઈ લો!`
-        : `Oh ${title}, since you didn't take your pills, I had to send an emergency alert to Arjun! Please take them now.`
+        ? `Oh dear ${title}, you haven't taken your medicine yet. I've sent an alert to Thomas. Please take it now!`
+        : `Oh ${title}, since you didn't take your pills, I had to send an emergency alert to Thomas! Please take them now.`
       
       setResponse(alertReply)
       speak(alertReply)
@@ -162,7 +203,7 @@ export default function VoiceAssistant({ user, elderId, currentTab, setCurrentTa
       
       const title = getElderTitle()
       const reply = userLanguage === 'gu'
-        ? `ખૂબ સરસ દાદા! મેં નોંધી લીધું છે કે તમે દવા લઈ લીધી છે. કુટુંબને તેની જાણ કરી દીધી છે હોં!`
+        ? `Great! I've marked that you took your medicine. I've let the family know!`
         : `Wonderful! I have marked your ${med.name} as taken and updated the family, ${title}.`
       
       setResponse(reply)
@@ -186,9 +227,9 @@ export default function VoiceAssistant({ user, elderId, currentTab, setCurrentTa
     let reply = ''
     if (userLanguage === 'gu') {
       if (nextAttempt <= 2) {
-        reply = `અરે વહાલા ${title}, જીદ ન કરો પ્લીઝ! દવા લેશો તો જ જલ્દી સાજા થશો ને. શું તમે હવે ${med.name} લેશો?`
+        reply = `Please don't refuse, dear ${title}. Taking medicine is important. Will you take ${med.name} now?`
       } else {
-        reply = `ચેતવણી: વહાલા ${title}, આ દવા તમારા માટે ખૂબ જરૂરી છે. પ્લીઝ હમણાં જ ${med.name} લો.`
+        reply = `Warning: dear ${title}, this medicine is vital for you. Please take ${med.name} immediately.`
       }
     } else {
       if (nextAttempt <= 2) {
@@ -216,7 +257,7 @@ export default function VoiceAssistant({ user, elderId, currentTab, setCurrentTa
     
     let reply = ''
     if (userLanguage === 'gu') {
-      reply = `મને બરાબર સમજાણું નથી ${title}. તમે દવા લીધી કે નહીં? પ્લીઝ હા અથવા ના માં કહો ને.`
+      reply = `I didn't quite catch that, ${title}. Did you take the medicine? Please say yes or no.`
     } else {
       reply = `I didn't quite catch that, ${title}. Did you take your ${med.name}? Please say yes or no.`
     }
@@ -241,7 +282,7 @@ export default function VoiceAssistant({ user, elderId, currentTab, setCurrentTa
     
     if (nextAttempt > 3) {
       const quitReply = userLanguage === 'gu'
-        ? `કોઈ જવાબ મળ્યો નથી ${title}. મેં તમારા ઘરના સભ્યોને એલર્ટ મોકલી આપ્યો છે.`
+        ? `No response received, ${title}. I've sent an alert to your family.`
         : `No response received, ${title}. I am alerting the family.`
       setResponse(quitReply)
       speak(quitReply)
@@ -257,7 +298,7 @@ export default function VoiceAssistant({ user, elderId, currentTab, setCurrentTa
 
     let reply = ''
     if (userLanguage === 'gu') {
-      reply = `વહાલા ${title}, હું ફરીથી પૂછું છું. શું તમે ${med.name} દવા લીધી?`
+      reply = `Dear ${title}, I ask again. Did you take your ${med.name}?`
     } else {
       reply = `My dear ${title}, I am asking again. Did you take your ${med.name} pills?`
     }
@@ -279,12 +320,12 @@ export default function VoiceAssistant({ user, elderId, currentTab, setCurrentTa
     const fullTranscript = medicalTranscript + " " + text
     setMedicalTranscript(fullTranscript)
     
-    const isDone = text.toLowerCase().includes('બસ') || text.toLowerCase().includes('that\'s it') || text.toLowerCase().includes('done') || text.toLowerCase().includes('ના') || text.toLowerCase().includes('no')
+    const isDone = text.toLowerCase().includes('done') || text.toLowerCase().includes('that\'s it') || text.toLowerCase().includes('no')
     
     if (isDone || fullTranscript.length > 60) {
       const title = getElderTitle()
       const reply = userLanguage === 'gu' 
-        ? `ઠીક છે ${title}, મેં બધી વિગતો ડૉક્ટર માટે નોંધ લીધી છે.`
+        ? `Okay ${title}, I've noted down the details for the doctor.`
         : `Okay ${title}, I have noted down your symptoms for the doctor.`
       setResponse(reply)
       speak(reply)
@@ -304,7 +345,7 @@ export default function VoiceAssistant({ user, elderId, currentTab, setCurrentTa
       setTimeout(() => setShowBubble(false), 6000)
     } else {
       const reply = userLanguage === 'gu' 
-        ? `બીજું કંઈ દુખે છે? કે બસ આટલું જ?`
+        ? `Does anything else hurt? Or is that all?`
         : `Does anything else hurt, or is that all?`
       setResponse(reply)
       speakWithCallback(reply, () => {
@@ -319,7 +360,7 @@ export default function VoiceAssistant({ user, elderId, currentTab, setCurrentTa
   const handleFamilyMessage = async (text) => {
     const title = getElderTitle()
     const reply = userLanguage === 'gu'
-      ? `ખૂબ સરસ ${title}, મેં તમારો મેસેજ અર્જુનને મોકલી દીધો છે હોં!`
+      ? `Great ${title}, I've sent your message to Thomas!`
       : `Great ${title}, I have sent your message to the family!`
       
     setResponse(reply)
@@ -345,81 +386,64 @@ export default function VoiceAssistant({ user, elderId, currentTab, setCurrentTa
     const t = text.toLowerCase().trim()
     let reply = ''
     const title = getElderTitle()
+    const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000'
     
-    if (userLanguage === 'gu') {
-      if (t.includes('ઘર') || t.includes('હોમ') || t.includes('મુખ્ય') || t.includes('ડેસ્કબોર્ડ')) {
-        setCurrentTab('home')
-        reply = `હા ${title}, આપણે ઘર પેજ પર જઈએ છીએ હોં!`
-      } else if (t.includes('યાદ') || t.includes('વાર્તા') || t.includes('યાદગીરી') || t.includes('માઈક')) {
-        setCurrentTab('memories')
-        reply = `લાવો ${title}, તમારી સરસ વાર્તાઓ વાળું પેજ ખોલી આપું!`
-      } else if (t.includes('દવા') || t.includes('મેડિસિન') || t.includes('ગોળી')) {
-        setCurrentTab('medicine')
-        reply = `${title}, દવાઓનું પેજ ખોલ્યું છે, જોઈ લો હોં!`
-      } else if (t.includes('સુવા') || t.includes('ઊંઘ') || t.includes('નિદ્રા') || t.includes('સૂઈ')) {
-        triggerSleepToggle(true)
-        reply = `${title}, શુભ રાત્રિ! પ્લીઝ જલ્દી સુઈ જજો હોં, હું નોંધી લઉં છું!`
-      } else if (t.includes('જાગી') || t.includes('સવાર') || t.includes('જાગો')) {
-        triggerSleepToggle(false)
-        reply = `શુભ સવાર ${title}! હું તમારા જાગવાની ખુશખબરી નોંધી લઉં છું!`
-      } else if (t.includes('અપોઇન્ટમેન્ટ') || t.includes('મુલાકાત') || t.includes('ડૉક્ટર')) {
-        const nextAppt = appointments && appointments[0]
-        reply = nextAppt 
-          ? `${title}, તમારી આગામી અપોઈન્ટમેન્ટ ${toGujaratiDigits(nextAppt.time)} વાગ્યે ${nextAppt.titleGu || nextAppt.title} છે.`
-          : `આજે તમારી કોઈ અપોઈન્ટમેન્ટ નથી હોં ${title}.`
-      } else if (t.includes('તબિયત') || t.includes('ચેકઅપ')) {
-        setIsMedicalCheckup(true)
-        setMedicalTranscript('')
-        reply = `હા ${title}, તમને શું તકલીફ થાય છે? ક્યાં દુખે છે?`
-        speakWithCallback(reply, () => { try { setIsListening(true); recognition.start() } catch (e) {} })
-        return
-      } else if (t.includes('મેસેજ') || t.includes('સંદેશો')) {
-        setIsFamilyMessage(true)
-        reply = `હા ${title}, કહો તમારે શું મેસેજ મોકલવો છે?`
-        speakWithCallback(reply, () => { try { setIsListening(true); recognition.start() } catch (e) {} })
-        return
-      } else if (t.includes('કેમ છો') || t.includes('તમે કોણ')) {
-        reply = `હું તમારી મદદ કરનાર લાડકું પૌત્ર જેવો છું. કહો, તમારી શું સેવા કરું ${title}?`
-      } else {
-        reply = `માફ કરજો ${title}, મને સમજાયું નહીં. પ્લીઝ ફરીથી કહેશો?`
-      }
+    if (t.includes('home') || t.includes('go home') || t.includes('dashboard')) {
+      setCurrentTab('home')
+      reply = `Sure ${title}, let's go back to the home page!`
+    } else if (t.includes('memories') || t.includes('story') || t.includes('stories') || t.includes('mic')) {
+      setCurrentTab('memories')
+      reply = `Here you go ${title}, your beautiful stories page is open!`
+    } else if (t.includes('medicine') || t.includes('medicines') || t.includes('pill') || t.includes('pills')) {
+      setCurrentTab('medicine')
+      reply = `Here is your medicine page, ${title}. Let's make sure everything is taken!`
+    } else if (t.includes('sleep') || t.includes('go to sleep')) {
+      triggerSleepToggle(true)
+      reply = `Good night, ${title}! Sleep tight, I will let everyone know you are sleeping.`
+    } else if (t.includes('awake') || t.includes('wake up') || t.includes('woke up')) {
+      triggerSleepToggle(false)
+      reply = `Good morning, ${title}! I am so happy you are awake, I will tell the family.`
+    } else if (t.includes('appointment') || t.includes('appointments') || t.includes('doctor')) {
+      const nextAppt = appointments && appointments[0]
+      reply = nextAppt
+        ? `My dear ${title}, your next appointment is ${nextAppt.title} at ${nextAppt.time}.`
+        : `You have no appointments today, ${title}.`
+    } else if (t.includes('health') || t.includes('checkup')) {
+      setIsMedicalCheckup(true)
+      setMedicalTranscript('')
+      reply = `Okay ${title}, tell me what's bothering you. Where does it hurt?`
+      speakWithCallback(reply, () => { try { setIsListening(true); recognition.start() } catch (e) {} })
+      return
+    } else if (t.includes('message') || t.includes('send message')) {
+      setIsFamilyMessage(true)
+      reply = `Sure ${title}, what would you like me to tell the family?`
+      speakWithCallback(reply, () => { try { setIsListening(true); recognition.start() } catch (e) {} })
+      return
+    } else if (t.includes('how are you') || t.includes('who are you') || t.includes('hello') || t.includes('hi')) {
+      reply = `I am your caring assistant, like your own grandchild! How can I help you today, ${title}?`
     } else {
-      if (t.includes('home') || t.includes('go home') || t.includes('dashboard')) {
-        setCurrentTab('home')
-        reply = `Sure ${title}, let's go back to the home page!`
-      } else if (t.includes('memories') || t.includes('story') || t.includes('stories') || t.includes('mic')) {
-        setCurrentTab('memories')
-        reply = `Here you go ${title}, your beautiful stories page is open!`
-      } else if (t.includes('medicine') || t.includes('medicines') || t.includes('pill') || t.includes('pills')) {
-        setCurrentTab('medicine')
-        reply = `Here is your medicine page, ${title}. Let's make sure everything is taken!`
-      } else if (t.includes('sleep') || t.includes('go to sleep')) {
-        triggerSleepToggle(true)
-        reply = `Good night, ${title}! Sleep tight, I will let everyone know you are sleeping.`
-      } else if (t.includes('awake') || t.includes('wake up') || t.includes('woke up')) {
-        triggerSleepToggle(false)
-        reply = `Good morning, ${title}! I am so happy you are awake, I will tell the family.`
-      } else if (t.includes('appointment') || t.includes('appointments') || t.includes('doctor')) {
-        const nextAppt = appointments && appointments[0]
-        reply = nextAppt
-          ? `My dear ${title}, your next appointment is ${nextAppt.title} at ${nextAppt.time}.`
-          : `You have no appointments today, ${title}.`
-      } else if (t.includes('health') || t.includes('checkup')) {
-        setIsMedicalCheckup(true)
-        setMedicalTranscript('')
-        reply = `Okay ${title}, tell me what's bothering you. Where does it hurt?`
-        speakWithCallback(reply, () => { try { setIsListening(true); recognition.start() } catch (e) {} })
-        return
-      } else if (t.includes('message') || t.includes('send message')) {
-        setIsFamilyMessage(true)
-        reply = `Sure ${title}, what would you like me to tell the family?`
-        speakWithCallback(reply, () => { try { setIsListening(true); recognition.start() } catch (e) {} })
-        return
-      } else if (t.includes('how are you') || t.includes('who are you') || t.includes('hello') || t.includes('hi')) {
-        reply = `I am your caring assistant, like your own grandchild! How can I help you today, ${title}?`
-      } else {
-        reply = `I didn't quite catch that, ${title}. Could you repeat it for me?`
-      }
+      // Dynamic voice GPT fallback!
+      fetch(`${API_BASE}/api/checkin`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_id: elderId, message: text })
+      })
+        .then(res => {
+          if (!res.ok) throw new Error('API failed')
+          return res.json()
+        })
+        .then(data => {
+          const replyText = data.reply
+          setResponse(replyText)
+          speak(replyText)
+        })
+        .catch(err => {
+          console.error(err)
+          const fallbackReply = `I'm here for you, my dear ${title}. Is there anything else I can help you with?`
+          setResponse(fallbackReply)
+          speak(fallbackReply)
+        })
+      return
     }
     
     setResponse(reply)
@@ -476,7 +500,7 @@ export default function VoiceAssistant({ user, elderId, currentTab, setCurrentTa
       } else {
         const title = getElderTitle()
         const errReply = userLanguage === 'gu' 
-          ? `માફ કરજો ${title}, હું સાંભળી શકી નથી.` 
+          ? `Sorry ${title}, I couldn't hear you.` 
           : `Sorry ${title}, I couldn't hear you.`
         setResponse(errReply)
         speak(errReply)
@@ -524,7 +548,7 @@ export default function VoiceAssistant({ user, elderId, currentTab, setCurrentTa
               
               const title = getElderTitle()
               const promptText = userLanguage === 'gu'
-                ? `${title}, તમારી દવા લેવાનો સમય થઈ ગયો છે. પ્લીઝ તમારી વહાલી ${med.name} દવા લઈ લો ને! શું તમે દવા લીધી?`
+                ? `Dear ${title}, it's time for your medicine. Please take ${med.name}. Did you take it?`
                 : `My dear ${title}, it's time to take your medicine. Please take your sweet ${med.name} pill for me! Did you take it?`
               
               setResponse(promptText)
@@ -539,7 +563,7 @@ export default function VoiceAssistant({ user, elderId, currentTab, setCurrentTa
               })
               
               triggerVisualAlert(userLanguage === 'gu' 
-                ? `દવા લેવાનો સમય થઈ ગયો છે: ${med.name}` 
+                ? `Time to take medicine: ${med.name}` 
                 : `Time to take your medicine: ${med.name}`
               )
             }
@@ -579,12 +603,12 @@ export default function VoiceAssistant({ user, elderId, currentTab, setCurrentTa
               
               const title = getElderTitle()
               if (userLanguage === 'gu') {
-                speak(`વહાલા ${title}, તમારી અપોઈન્ટમેન્ટ ૧૫ મિનિટમાં શરૂ થવાની છે: ${appt.titleGu || appt.title}.`)
+                speak(`Dear ${title}, your appointment starts in 15 minutes: ${appt.title}.`)
               } else {
                 speak(`Reminder dear ${title}, your appointment is starting in fifteen minutes: ${appt.title}.`)
               }
               triggerVisualAlert(userLanguage === 'gu'
-                ? `અપોઈન્ટમેન્ટ નજીક છે: ${appt.titleGu || appt.title} (૧૫ મિનિટમાં)`
+                ? `Upcoming appointment in 15 minutes: ${appt.title}`
                 : `Upcoming appointment: ${appt.title} (in 15 mins)`
               )
             }
@@ -621,7 +645,7 @@ export default function VoiceAssistant({ user, elderId, currentTab, setCurrentTa
       }
       
       const title = getElderTitle()
-      const welcome = userLanguage === 'gu' ? `હા સાંભળું છું ${title}, કહો ક્યાં જઈએ?` : `Listening, my dear ${title}...`
+      const welcome = `Listening, my dear ${title}...`
       speak(welcome)
     }
   }
@@ -665,10 +689,11 @@ export default function VoiceAssistant({ user, elderId, currentTab, setCurrentTa
 
             <div>
               <p className="text-xs text-indigo-500 font-bold uppercase tracking-wider mb-1">
-                {userLanguage === 'gu' ? 'તમે કહ્યું:' : 'You said:'}
+                <span>You said:</span>
               </p>
               <p className="text-lg font-bold text-elder-brown leading-snug font-display">
-                {transcript || (userLanguage === 'gu' ? 'સાંભળી રહ્યું છે...' : 'Listening...')}
+                {transcript || 'Listening...'}
+
               </p>
             </div>
 
@@ -677,7 +702,7 @@ export default function VoiceAssistant({ user, elderId, currentTab, setCurrentTa
                 <Volume2 size={18} className="text-indigo-600 mt-1 flex-shrink-0" />
                 <div>
                   <p className="text-xs text-indigo-500 font-bold uppercase tracking-wider mb-1">
-                    {userLanguage === 'gu' ? 'મદદગાર:' : 'Assistant:'}
+                    <span>Assistant:</span>
                   </p>
                   <p className="text-lg font-bold text-[#4F46E5] leading-snug font-display">
                     {response}

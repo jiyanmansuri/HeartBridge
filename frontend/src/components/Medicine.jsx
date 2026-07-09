@@ -44,7 +44,7 @@ export default function Medicine({ elderId, setCurrentTab }) {
   }
 
   const handleDeleteMedicine = async (medicineId) => {
-    if (!window.confirm("શું તમે ખરેખર આ દવા દૂર કરવા માંગો છો? (Are you sure you want to remove this medicine?)")) return
+    if (!window.confirm("Are you sure you want to remove this medicine?")) return
     try {
       const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000'
       const res = await fetch(`${API_BASE}/api/medicine/delete/${medicineId}`, {
@@ -123,7 +123,7 @@ export default function Medicine({ elderId, setCurrentTab }) {
           onClick={() => setCurrentTab('home')} 
           className="bg-white hover:bg-orange-50/50 border-4 border-[#e8dcc4] text-[#8b5a2b] font-bold text-xl md:text-2xl py-3 px-6 rounded-full shadow-md flex items-center gap-3 transition-all active:scale-95"
         >
-          <span className="text-2xl md:text-3xl">⬅️</span> પાછા જાઓ (Back)
+          <span className="text-2xl md:text-3xl">⬅️</span> Back
         </button>
 
         {isSingleMode && (
@@ -131,7 +131,7 @@ export default function Medicine({ elderId, setCurrentTab }) {
             onClick={() => setShowAddModal(true)}
             className="bg-[#769b76] hover:bg-[#5f805f] text-white font-bold text-xl md:text-2xl py-3 px-6 rounded-full shadow-md flex items-center gap-2 transition-all active:scale-95 border-4 border-[#c4e0c6]"
           >
-            <Plus size={24} strokeWidth={3} /> દવા ઉમેરો (Add)
+            <Plus size={24} strokeWidth={3} /> Add Medicine
           </button>
         )}
       </div>
@@ -139,15 +139,15 @@ export default function Medicine({ elderId, setCurrentTab }) {
       {/* Header Card */}
       <div className="w-full bg-[#fdfbf7] border-4 border-[#e8dcc4] rounded-[2.5rem] p-8 text-center shadow-lg relative overflow-hidden">
         <div className="absolute top-0 right-0 w-24 h-24 bg-orange-100/30 rounded-full blur-2xl"></div>
-        <h2 className="text-4xl md:text-5xl font-display font-black text-[#5c4a3d] mb-2">આજની દવા</h2>
+        <h2 className="text-4xl md:text-5xl font-display font-black text-[#5c4a3d] mb-2">Today's Medicine</h2>
         <p className="text-lg md:text-xl font-bold text-[#7a6352]">Today's Medicine Schedule</p>
       </div>
       
       {loading ? (
-        <p className="text-xl md:text-2xl font-bold text-[#7a6352] animate-pulse">લોડ થઈ રહ્યું છે (Loading...)</p>
+        <p className="text-xl md:text-2xl font-bold text-[#7a6352] animate-pulse">Loading...</p>
       ) : medicines.length === 0 ? (
         <div className="bg-[#fdfbf7] border-4 border-[#e8dcc4] rounded-[2.5rem] p-12 text-center shadow w-full">
-          <p className="text-2xl font-bold text-[#7a6352]">કોઈ દવા નથી (No medicine scheduled)</p>
+          <p className="text-2xl font-bold text-[#7a6352]">No medicine scheduled</p>
         </div>
       ) : (
         <div className="w-full flex flex-col gap-6">
@@ -212,12 +212,12 @@ export default function Medicine({ elderId, setCurrentTab }) {
                   {med.taken ? (
                     <>
                       <CheckCircle className="w-8 h-8 md:w-9 md:h-9" fill="#96E6B3" color="white" />
-                      <span>લીધી (Taken)</span>
+                      <span>Taken</span>
                     </>
                   ) : (
                     <>
                       <Circle className="w-8 h-8 md:w-9 md:h-9 text-gray-400" />
-                      <span>દવા લો (Take)</span>
+                      <span>Take</span>
                     </>
                   )}
                 </button>
@@ -232,7 +232,7 @@ export default function Medicine({ elderId, setCurrentTab }) {
         <div className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in text-[#5c4a3d]">
           <div className="bg-white border-4 border-[#e8dcc4] rounded-[3rem] p-8 w-full max-w-lg shadow-2xl max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-2xl font-black text-[#5c4a3d]">નવી દવા ઉમેરો (Add New Medicine)</h3>
+              <h3 className="text-2xl font-black text-[#5c4a3d]">Add New Medicine</h3>
               <button onClick={() => {
                 setShowAddModal(false)
                 setSelectedPhoto(null)
@@ -242,24 +242,24 @@ export default function Medicine({ elderId, setCurrentTab }) {
             
             <form onSubmit={handleAddMedicine} className="flex flex-col gap-4">
               <div>
-                <label className="block text-lg font-bold text-gray-700 mb-1">દવાનું નામ (Medicine Name)</label>
-                <input required type="text" value={newMed.name} onChange={e => setNewMed({...newMed, name: e.target.value})} className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#4F46E5] outline-none text-lg font-semibold" placeholder="દવાનું નામ દાખલ કરો" />
+                <label className="block text-lg font-bold text-gray-700 mb-1">Medicine Name</label>
+                <input required type="text" value={newMed.name} onChange={e => setNewMed({...newMed, name: e.target.value})} className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#4F46E5] outline-none text-lg font-semibold" placeholder="Enter medicine name" />
               </div>
               
               <div className="flex gap-4">
                 <div className="flex-grow">
-                  <label className="block text-lg font-bold text-gray-700 mb-1">માત્રા / ડોઝ (Dose)</label>
-                  <input required type="text" value={newMed.dose} onChange={e => setNewMed({...newMed, dose: e.target.value})} className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#4F46E5] outline-none text-lg font-semibold" placeholder="દા.ત. 1 ટેબ્લેટ" />
+                  <label className="block text-lg font-bold text-gray-700 mb-1">Dose</label>
+                  <input required type="text" value={newMed.dose} onChange={e => setNewMed({...newMed, dose: e.target.value})} className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#4F46E5] outline-none text-lg font-semibold" placeholder="e.g. 1 tablet" />
                 </div>
                 <div className="w-40">
-                  <label className="block text-lg font-bold text-gray-700 mb-1">સમય (Time)</label>
+                  <label className="block text-lg font-bold text-gray-700 mb-1">Time</label>
                   <input required type="time" value={newMed.schedule} onChange={e => setNewMed({...newMed, schedule: e.target.value})} className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#4F46E5] outline-none text-lg font-semibold" />
                 </div>
               </div>
 
               {/* Photo Upload */}
               <div>
-                <label className="block text-lg font-bold text-gray-700 mb-2">ફોટો (Photo - Optional)</label>
+                <label className="block text-lg font-bold text-gray-700 mb-2">Photo - Optional</label>
                 <div className="flex items-center gap-4">
                   <label className="flex-1 flex flex-col items-center justify-center border-4 border-dashed border-[#e8dcc4] hover:border-[#4F46E5] bg-gray-50 rounded-2xl p-4 cursor-pointer hover:bg-orange-50/10 transition-all text-center">
                     <input 
@@ -269,7 +269,7 @@ export default function Medicine({ elderId, setCurrentTab }) {
                       className="hidden" 
                     />
                     <Camera size={28} className="text-gray-400 mb-1" />
-                    <span className="text-sm font-bold text-gray-600">ફોટો પસંદ કરો (Choose File)</span>
+                    <span className="text-sm font-bold text-gray-600">Choose File</span>
                   </label>
 
                   {previewUrl && (
@@ -291,8 +291,8 @@ export default function Medicine({ elderId, setCurrentTab }) {
               </div>
 
               <div className="flex gap-4 mt-4">
-                <button type="button" onClick={() => setShowAddModal(false)} className="flex-1 border-4 border-gray-200 text-gray-500 font-bold py-3.5 rounded-2xl text-lg hover:bg-gray-50 active:scale-95 transition-all">રદ કરો (Cancel)</button>
-                <button type="submit" className="flex-1 bg-[#769b76] text-white font-bold py-3.5 rounded-2xl hover:bg-[#5f805f] transition-all active:scale-95 border-4 border-[#c4e0c6] text-lg shadow-sm">સાચવો (Save)</button>
+                <button type="button" onClick={() => setShowAddModal(false)} className="flex-1 border-4 border-gray-200 text-gray-500 font-bold py-3.5 rounded-2xl text-lg hover:bg-gray-50 active:scale-95 transition-all">Cancel</button>
+                <button type="submit" className="flex-1 bg-[#769b76] text-white font-bold py-3.5 rounded-2xl hover:bg-[#5f805f] transition-all active:scale-95 border-4 border-[#c4e0c6] text-lg shadow-sm">Save</button>
               </div>
             </form>
           </div>

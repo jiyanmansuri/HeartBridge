@@ -10,7 +10,7 @@ export default function FamilyGroup() {
     const saved = localStorage.getItem('familyMembers')
     return saved ? JSON.parse(saved) : [
       { id: 1, name: 'Ramabai', relation: 'Elder', isElder: true, gender: 'female', avatar: '👵' },
-      { id: 2, name: 'Arjun Patel', relation: 'Son', isAdmin: true, parentId: 1, gender: 'male', avatar: '👨' }
+      { id: 2, name: 'Thomas Patel', relation: 'Son', isAdmin: true, parentId: 1, gender: 'male', avatar: '👨' }
     ]
   })
 
@@ -262,7 +262,7 @@ export default function FamilyGroup() {
                   type="text" 
                   value={newMember.name} 
                   onChange={e => setNewMember({...newMember, name: e.target.value})} 
-                  placeholder="e.g. Priyal Patel" 
+                  placeholder="e.g. Clairel Patel" 
                   className="w-full px-4 py-3 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-indigo-100 focus:border-family-primary outline-none text-sm font-semibold" 
                 />
               </div>
@@ -275,14 +275,14 @@ export default function FamilyGroup() {
                     onChange={e => setNewMember({...newMember, relation: e.target.value})}
                     className="w-full px-4 py-3 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-indigo-100 focus:border-family-primary outline-none text-sm font-semibold cursor-pointer bg-white"
                   >
-                    <option value="Daughter">Daughter (પુત્રી)</option>
-                    <option value="Son">Son (પુત્ર)</option>
-                    <option value="Grandson">Grandson (પૌત્ર)</option>
-                    <option value="Granddaughter">Granddaughter (પૌત્રી)</option>
-                    <option value="Daughter-in-law">Daughter-in-law (પુત્રવધૂ)</option>
-                    <option value="Son-in-law">Son-in-law (જમાઈ)</option>
-                    <option value="Sister">Sister (બહેન)</option>
-                    <option value="Brother">Brother (ભાઈ)</option>
+                    <option value="Daughter">Daughter</option>
+                    <option value="Son">Son</option>
+                    <option value="Grandson">Grandson</option>
+                    <option value="Granddaughter">Granddaughter</option>
+                    <option value="Daughter-in-law">Daughter-in-law</option>
+                    <option value="Son-in-law">Son-in-law</option>
+                    <option value="Sister">Sister</option>
+                    <option value="Brother">Brother</option>
                   </select>
                 </div>
 
@@ -338,7 +338,7 @@ export default function FamilyGroup() {
                   type="text" 
                   value={editingMember.name} 
                   onChange={e => setEditingMember({...editingMember, name: e.target.value})} 
-                  placeholder="e.g. Priyal Patel" 
+                  placeholder="e.g. Clairel Patel" 
                   className="w-full px-4 py-3 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-indigo-100 focus:border-family-primary outline-none text-sm font-semibold" 
                   disabled={editingMember.isAdmin}
                 />
@@ -352,14 +352,14 @@ export default function FamilyGroup() {
                     onChange={e => setEditingMember({...editingMember, relation: e.target.value})}
                     className="w-full px-4 py-3 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-indigo-100 focus:border-family-primary outline-none text-sm font-semibold cursor-pointer bg-white"
                   >
-                    <option value="Daughter">Daughter (પુત્રી)</option>
-                    <option value="Son">Son (પુત્ર)</option>
-                    <option value="Grandson">Grandson (પૌત્ર)</option>
-                    <option value="Granddaughter">Granddaughter (પૌત્રી)</option>
-                    <option value="Daughter-in-law">Daughter-in-law (પુત્રવધૂ)</option>
-                    <option value="Son-in-law">Son-in-law (જમાઈ)</option>
-                    <option value="Sister">Sister (બહેન)</option>
-                    <option value="Brother">Brother (ભાઈ)</option>
+                    <option value="Daughter">Daughter</option>
+                    <option value="Son">Son</option>
+                    <option value="Grandson">Grandson</option>
+                    <option value="Granddaughter">Granddaughter</option>
+                    <option value="Daughter-in-law">Daughter-in-law</option>
+                    <option value="Son-in-law">Son-in-law</option>
+                    <option value="Sister">Sister</option>
+                    <option value="Brother">Brother</option>
                   </select>
                 </div>
 

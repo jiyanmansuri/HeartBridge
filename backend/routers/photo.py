@@ -101,6 +101,7 @@ def list_photos(user_id: int = 1, session: Session = Depends(get_session)):
 async def caption_photo(
     photo_id: int,
     audio: UploadFile = File(...),
+    transcript: Optional[str] = Form(None),
     session: Session = Depends(get_session)
 ):
     photo_record = session.get(Photo, photo_id)
@@ -113,8 +114,8 @@ async def caption_photo(
     with open(audio_path, "wb") as buffer:
         shutil.copyfileobj(audio.file, buffer)
         
-    transcript_text = "A beautiful memory attached."
-    if os.environ.get("GEMINI_API_KEY"):
+    transcript_text = transcript or "A beautiful memory attached."
+    if not transcript and os.environ.get("GEMINI_API_KEY"):
         try:
             audio_file = genai.upload_file(path=audio_path)
             model = genai.GenerativeModel('gemini-1.5-flash')

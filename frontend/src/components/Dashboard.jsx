@@ -4,7 +4,7 @@ import {
   AlertTriangle, ChevronRight, X, Volume2, ShieldCheck, RefreshCw 
 } from 'lucide-react'
 
-export default function Dashboard({ familyGroupId, elderId, alerts, setAlerts, setCurrentView }) {
+export default function Dashboard({ familyGroupId, elderId, alerts, setAlerts, setCurrentView, user }) {
   const [elder, setElder] = useState(null)
   const [activities, setActivities] = useState([])
   const [photos, setPhotos] = useState([])
@@ -266,10 +266,26 @@ export default function Dashboard({ familyGroupId, elderId, alerts, setAlerts, s
     return `${diffDays}d ago`
   }
 
+  const getDualTimeText = (dateStr) => {
+    if (!dateStr) return '';
+    const elderTz = elder?.timezone || 'Asia/Kolkata';
+    const familyTz = user?.timezone || 'America/Toronto';
+    const elderLoc = elder?.location?.split(',')[0] || 'Ahmedabad';
+    const familyLoc = user?.location?.split(',')[0] || 'Toronto';
+
+    try {
+      const date = new Date(dateStr);
+      const elderTime = date.toLocaleTimeString([], { timeZone: elderTz, hour: '2-digit', minute: '2-digit', hour12: true });
+      const familyTime = date.toLocaleTimeString([], { timeZone: familyTz, hour: '2-digit', minute: '2-digit', hour12: true });
+      return `${familyTime} ${familyLoc} time / ${elderTime} ${elderLoc} time`;
+    } catch (e) {
+      return new Date(dateStr).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+  }
+
   const getElderNameString = () => {
-    if (!elder) return 'Baa (Kamlaben)'
-    if (elder.name.toLowerCase() === 'ramabai') return 'Baa (Ramabai)'
-    return `Baa (${elder.name})`
+    if (!elder) return 'Baa (Kamala Shah)'
+    return `Baa (${elder.preferred_name || elder.name})`
   }
 
   return (
@@ -304,7 +320,12 @@ export default function Dashboard({ familyGroupId, elderId, alerts, setAlerts, s
           </div>
           <div>
             <h1 className="text-2xl font-black font-display text-gray-900 tracking-tight">HeartBridge Family</h1>
-            <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1 text-sm text-gray-500 font-semibold">
+            {elder?.location && user?.location && (
+              <div className="text-xs font-black text-indigo-600 bg-indigo-50 border border-indigo-100 rounded-lg px-2.5 py-0.5 mt-1 tracking-wide inline-flex items-center gap-1.5 shadow-sm">
+                ✈️ {elder.preferred_name || elder.name.split(' ')[0]} ({elder.location}) ➔ You ({user.name.split(' ')[0]}) ({user.location})
+              </div>
+            )}
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mt-2 text-sm text-gray-500 font-semibold">
               <span>Connected to:</span>
               <span className="text-family-primary">{getElderNameString()}</span>
               <span className="text-gray-300">•</span>
@@ -352,8 +373,9 @@ export default function Dashboard({ familyGroupId, elderId, alerts, setAlerts, s
                       <p className="text-sm font-semibold text-gray-800 leading-snug">
                         {formatActivityText(act)}
                       </p>
-                      <span className="text-xs text-gray-400 font-medium flex items-center gap-1 mt-1">
-                        <Clock size={12} /> {formatTimeAgo(act.created_at)}
+                      <span className="text-xs text-gray-400 font-medium flex flex-col gap-0.5 mt-1">
+                        <span className="flex items-center gap-1"><Clock size={12} /> {formatTimeAgo(act.created_at)}</span>
+                        <span className="text-[10px] text-gray-400/80 font-bold tracking-wide">{getDualTimeText(act.created_at)}</span>
                       </span>
                     </div>
                   </div>

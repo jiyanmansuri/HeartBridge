@@ -26,7 +26,7 @@ export default function Login({ onLoginSuccess }) {
       })
       .catch(err => {
         console.error(err)
-        setError('સરવર સાથે જોડાણ થઈ શક્યું નથી (Could not connect to server)')
+        setError('Could not connect to server')
         setLoading(false)
       })
   }, [API_BASE])
@@ -46,7 +46,7 @@ export default function Login({ onLoginSuccess }) {
       onLoginSuccess(userData, 'elder')
     } catch (err) {
       console.error(err)
-      setError('નામ મળ્યું નથી. કૃપા કરીને સાચું નામ દાખલ કરો. (Profile not found. Please try again.)')
+      setError('Profile not found. Please try again.')
       setLoading(false)
     }
   }
@@ -70,7 +70,7 @@ export default function Login({ onLoginSuccess }) {
       onLoginSuccess(userData, 'family')
     } catch (err) {
       console.error(err)
-      setError('Invalid username or role. Please try again (e.g., Arjun).')
+      setError('Invalid username or role. Please try again (e.g., Thomas).')
       setLoading(false)
     }
   }
@@ -98,10 +98,10 @@ export default function Login({ onLoginSuccess }) {
           {/* Onboarding Text */}
           <div className="flex flex-col gap-2">
             <h2 className="text-3xl md:text-4xl font-bold text-elder-brown leading-snug">
-              તમારું સ્વાગત છે! (Welcome!)
+              Welcome!
             </h2>
             <p className="text-xl md:text-2xl text-gray-600 font-semibold mt-2">
-              તમે કોણ છો? (Please choose who you are:)
+              Please choose who you are:
             </p>
           </div>
 
@@ -113,12 +113,12 @@ export default function Login({ onLoginSuccess }) {
             >
               <span className="text-6xl md:text-7xl group-hover:scale-110 transition-transform duration-300">👵</span>
               <span className="text-2xl md:text-3xl font-extrabold mt-4">
-                વડીલ (Elder)
+                Elder
                 {users.length > 0 && (
                   <span className="block text-lg text-gray-500 font-bold mt-1">
                     ({singleMode 
                       ? (users.find(u => u.name.toLowerCase().includes('popat'))?.name || 'Popat dada')
-                      : (users.find(u => !u.name.toLowerCase().includes('popat'))?.name || 'Ramabai')
+                      : (users.find(u => u.name.toLowerCase().includes('kamala'))?.name || 'Margaret')
                     })
                   </span>
                 )}
@@ -132,7 +132,7 @@ export default function Login({ onLoginSuccess }) {
             >
               <span className="text-6xl md:text-7xl group-hover:scale-110 transition-transform duration-300">👨‍👩‍👧‍👦</span>
               <span className="text-2xl md:text-3xl font-extrabold mt-4">
-                કુટુંબ (Family)
+                Family
               </span>
             </button>
           </div>
@@ -150,7 +150,7 @@ export default function Login({ onLoginSuccess }) {
               className="w-6 h-6 text-[#4F46E5] focus:ring-[#4F46E5] border-gray-300 rounded cursor-pointer"
             />
             <label htmlFor="singleMode" className="text-lg font-bold text-gray-700 cursor-pointer select-none">
-              હું એકલો/એકલી વાપરું છું (Use without family / Single Mode)
+              Use without family / Single Mode
             </label>
           </div>
 
@@ -172,9 +172,9 @@ export default function Login({ onLoginSuccess }) {
               className="flex items-center gap-2 bg-white/50 hover:bg-white/80 border border-white/60 text-elder-brown text-lg font-bold py-2.5 px-5 rounded-2xl shadow transition-all active:scale-95"
             >
               <ArrowLeft size={20} />
-              પાછા જાઓ (Back)
+              Back
             </button>
-            <h1 className="text-elder-brown text-3xl font-display font-extrabold">સ્નેહ સેતુ (HeartBridge)</h1>
+            <h1 className="text-elder-brown text-3xl font-display font-extrabold">HeartBridge</h1>
           </div>
 
           <div className="h-0.5 w-full bg-gradient-to-r from-transparent via-white/60 to-transparent"></div>
@@ -182,10 +182,10 @@ export default function Login({ onLoginSuccess }) {
           {/* Welcoming Text */}
           <div className="flex flex-col gap-2">
             <h2 className="text-3xl md:text-4xl font-bold text-elder-brown">
-              વડીલો માટે લોગિન
+              Elder Login
             </h2>
             <p className="text-xl md:text-2xl text-gray-600 font-semibold">
-              કૃપા કરીને તમારું નામ પસંદ કરો:
+              Please select your name:
             </p>
           </div>
 
@@ -200,7 +200,7 @@ export default function Login({ onLoginSuccess }) {
           {loading ? (
             <div className="flex flex-col items-center gap-4 py-8">
               <div className="w-16 h-16 border-t-4 border-[#4F46E5] border-solid rounded-full animate-spin"></div>
-              <p className="text-xl md:text-2xl font-bold text-elder-brown">લોડ થઈ રહ્યું છે... (Loading...)</p>
+              <p className="text-xl md:text-2xl font-bold text-elder-brown">Loading...</p>
             </div>
           ) : (
             <div className="flex flex-wrap justify-center gap-6 py-4">
@@ -218,8 +218,6 @@ export default function Login({ onLoginSuccess }) {
                   <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-[#4F46E5]/10 border border-[#4F46E5]/20 flex items-center justify-center text-4xl shadow-inner overflow-hidden">
                     {user.name.toLowerCase().includes('popat') ? (
                       <img src="/popat.jpg" alt="Popat dada" className="w-full h-full object-cover" />
-                    ) : user.name.toLowerCase().includes('ramabai') ? (
-                      <img src="/ramabai.jpg" alt="Ramabai" className="w-full h-full object-cover" />
                     ) : (
                       <span>👵</span>
                     )}
@@ -233,14 +231,14 @@ export default function Login({ onLoginSuccess }) {
               {/* Custom Name entry */}
               <div className="w-full mt-6 px-4">
                 <p className="text-xl md:text-2xl font-bold text-gray-600 mb-4">
-                  અથવા નામ લખો (Or type your name):
+                  Or type your name:
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <input
                     type="text"
                     value={customName}
                     onChange={(e) => setCustomName(e.target.value)}
-                    placeholder="તમારું નામ લખો (Type name)"
+                    placeholder="Type name"
                     className="bg-white/80 border-2 border-white/60 focus:border-[#4F46E5] rounded-full px-6 py-4 text-xl md:text-2xl text-elder-brown outline-none font-bold text-center w-full max-w-sm shadow-inner"
                   />
                   <button
@@ -248,7 +246,7 @@ export default function Login({ onLoginSuccess }) {
                     disabled={!customName.trim()}
                     className={`btn-premium text-xl md:text-2xl py-4 px-8 rounded-full shadow-lg ${!customName.trim() ? 'opacity-50 cursor-not-allowed' : ''}`}
                   >
-                    લોગિન (Login)
+                    Login
                   </button>
                 </div>
               </div>
@@ -258,7 +256,7 @@ export default function Login({ onLoginSuccess }) {
           <div className="mt-4 flex items-center justify-center gap-3 bg-white/40 p-4 rounded-2xl border border-white/20">
             <span className="text-2xl">🔒</span>
             <span className="text-lg md:text-xl font-bold text-gray-500">
-              આ ઉપકરણ પર લોગિન કાયમ રહેશે. (Stay logged in on this device.)
+              Stay logged in on this device.
             </span>
           </div>
         </div>
@@ -288,7 +286,7 @@ export default function Login({ onLoginSuccess }) {
           <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#4F46E5] to-[#818CF8] flex items-center justify-center shadow-glow mb-3">
             <HeartPulse className="text-white" size={26} />
           </div>
-          <h1 className="text-2xl font-bold font-display text-gray-900 tracking-tight">HeartBridge (સ્નેહ સેતુ)</h1>
+          <h1 className="text-2xl font-bold font-display text-gray-900 tracking-tight">HeartBridge</h1>
           <p className="text-xs text-family-muted mt-1 font-medium">Family Member Sign In</p>
         </div>
 
@@ -312,7 +310,7 @@ export default function Login({ onLoginSuccess }) {
                 type="text"
                 value={customName}
                 onChange={(e) => setCustomName(e.target.value)}
-                placeholder="Enter name (e.g., Arjun)"
+                placeholder="Enter name (e.g., Thomas)"
                 className="w-full pl-11 pr-4 py-3 bg-gray-50/50 border border-gray-200 focus:border-family-primary focus:bg-white text-gray-900 outline-none transition-all placeholder:text-gray-400 font-medium rounded-2xl text-sm"
               />
             </div>

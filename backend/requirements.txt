@@ -8,3 +8,8 @@ httpx
 psycopg2-binary
 google-generativeai
 python-dotenv
+hindsight-client
+cascadeflow[groq,anthropic]
+groq
+tzdata
+

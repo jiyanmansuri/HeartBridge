@@ -92,104 +92,104 @@ def list_circle_posts(
         {
             "id": 9999,
             "category": "Grandma's Kitchen",
-            "content_text": "બાજરીનો રોટલો અને રીંગણનો ઓળો! શિયાળાની ઋતુમાં ગરમાગરમ રોટલા પર ઘી લગાવીને ખાવાની મજા જ કંઈક અલગ છે. (Bajri no Rotlo and Ringan no Olo! Having hot rotla smeared with ghee in winter is pure joy.)",
-            "author_name": "દાદી રાધાબેન (Radhaben)"
+            "content_text": "Making fresh handmade tagliatelle pasta on Sunday mornings with my grandchildren. The aroma of slow-simmered tomato ragù fills the entire house.",
+            "author_name": "Sophia (Rome, Italy)"
         },
         {
             "id": 9998,
             "category": "Tales from Our Roots",
-            "content_text": "અમારા ગામની નદી કિનારે આવેલું એ જૂનું વડનું ઝાડ, જ્યાં અમે બાળપણમાં સંતાકૂકડી રમતા. એ યાદો આજે પણ હૃદયમાં તાજી છે. (The old banyan tree by our village river where we played hide-and-seek in childhood. Those memories are still fresh.)",
-            "author_name": "દાદા હસમુખભાઈ (Hasmukhbhai)"
+            "content_text": "The cherry blossoms are beginning to bloom along the Meguro River. It reminds me of the spring picnics we had when I was a young boy in Tokyo.",
+            "author_name": "Hiroshi (Tokyo, Japan)"
         },
         {
             "id": 9997,
             "category": "Handmade & Heirlooms",
-            "content_text": "શરદી-ઉધરસ માટે આદુ, તુલસી અને કાળા મરીનો ઉકાળો. આ અમારા ઘરનો જૂનો અને રામબાણ ઈલાજ છે! (Ginger, Tulsi, and Black Pepper decoction for cold & cough. Our home's time-tested remedy!)",
-            "author_name": "શાંતાબા (Shantaba)"
+            "content_text": "I am knitting a traditional Aran wool sweater for my new great-granddaughter. The cable patterns carry stories of our family's heritage.",
+            "author_name": "Margaret (Dublin, Ireland)"
         },
         {
             "id": 9996,
             "category": "Grandma's Kitchen",
-            "content_text": "ઘરની બનાવેલી ગરમાગરમ સુખડી! ગોળ, ઘી અને ઘઉંના લોટનો આ સ્વાદ બાળપણના દિવસો યાદ અપાવે છે. (Homemade warm Sukhdi! The taste of jaggery, ghee, and wheat flour brings back childhood days.)",
-            "author_name": "મણીબેન પટેલ (Maniben Patel)"
+            "content_text": "Brewing a fresh pot of strong cafézinho coffee. In Brazil, we welcome every guest with warm coffee and fresh cheese bread.",
+            "author_name": "Maria (São Paulo, Brazil)"
         },
         {
             "id": 9995,
             "category": "Tales from Our Roots",
-            "content_text": "અમારા જમાનામાં ચોમાસામાં વરસાદ પડતાં જ આખું ગામ ભેગું થઈને કાગળની હોડીઓ બનાવતું અને ગીતો ગાતું. (In our time, as soon as it rained, the whole village gathered to make paper boats and sing.)",
-            "author_name": "મનસુખભાઈ વ્યાસ (Mansukhbhai Vyas)"
+            "content_text": "Walking along the Seine in the early morning fog. The local bookstores (Bouquinistes) are opening up, just like they did sixty years ago.",
+            "author_name": "Jean (Paris, France)"
         },
         {
             "id": 9994,
             "category": "Handmade & Heirlooms",
-            "content_text": "ભરતકામ કરેલી આ સુંદર તોરણ મારા લગ્નમાં મારી માતાએ મને ભેટ આપી હતી, જે આજે પણ મારા ઘરના મુખ્ય દ્વારની શોભા વધારે છે. (This beautiful embroidered Toran was gifted by my mother at my wedding. It still adorns my main door.)",
-            "author_name": "કમળાબેન જોષી (Kamlaben Joshi)"
+            "content_text": "My mother gave me her hand-carved maple leaf brooch when I moved to Canada. It still sits on my winter coat every single year.",
+            "author_name": "Evelyn (Toronto, Canada)"
         },
         {
             "id": 9993,
             "category": "Grandma's Kitchen",
-            "content_text": "ગરમાગરમ મેથીના ગોટા અને કઢી! વરસાદી સાંજે આ રાષ્ટ્રીય નાસ્તો આખા કુટુંબને હસતું રાખે છે. (Hot Methi na Gota and Kadhi! This rainy evening snack keeps the whole family smiling.)",
-            "author_name": "ચંપાબા (Champaba)"
+            "content_text": "Preparing Jollof rice for the family gathering this weekend. The secret is slow-steaming the rice with rich tomato and pepper spices.",
+            "author_name": "Kofi (Accra, Ghana)"
         },
         {
             "id": 9992,
             "category": "Tales from Our Roots",
-            "content_text": "જ્યારે લાઈટ નહોતી ત્યારે ફાનસના અજવાળે આખું કુટુંબ આંગણામાં ખાટલા પર બેસીને જૂની વાર્તાઓ સાંભળતું. (When there was no electricity, the whole family sat on cots in the courtyard under lantern light listening to old stories.)",
-            "author_name": "દાદા રસિકલાલ (Rasiklal)"
+            "content_text": "Sitting in a quiet garden in London with a warm cup of Earl Grey tea, listening to the birds. A perfect moment of peace.",
+            "author_name": "Sarah (London, UK)"
         },
         {
             "id": 9991,
             "category": "Handmade & Heirlooms",
-            "content_text": "ઉનાળામાં માટીના ઘડાનું ઠંડું પાણી પીવું એ ફ્રિજના પાણી કરતાં ઘણું ગુણકારી અને સ્વાદિષ્ટ છે. (Drinking cold water from a clay pot in summer is healthier and tastier than fridge water.)",
-            "author_name": "રણછોડભાઈ (Ranchhodbhai)"
+            "content_text": "We are crafting traditional clay pots for the upcoming festival. Working with Oaxacan black clay connects us directly to our ancestors.",
+            "author_name": "Diego (Oaxaca, Mexico)"
         },
         {
             "id": 9990,
             "category": "Grandma's Kitchen",
-            "content_text": "તાજી ખીચડી અને દહીં, જે પેટ માટે અમૃત સમાન છે. જ્યારે પણ કોઈ બીમાર પડે, ત્યારે આ અમારો પ્રથમ ઇલાજ છે. (Fresh Khichdi and Curd, like nectar for the stomach. Whenever someone is sick, this is our first remedy.)",
-            "author_name": "જશોદાબા (Jasodaba)"
+            "content_text": "Preparing fresh cardamom tea and warm snacks. Connecting with my daughter in Dubai over our weekly video call always brings joy.",
+            "author_name": "Asha (Ahmedabad, India)"
         },
         {
             "id": 9989,
             "category": "Tales from Our Roots",
-            "content_text": "અમારા ગામના મેળાઓની એ મજા, જ્યાં લાકડાના ચકડોળ પર બેસીને આખા આકાશને સ્પર્શવાનો અહેસાસ થતો. (The joy of our village fairs, where riding the wooden Ferris wheel felt like touching the sky.)",
-            "author_name": "કાંતિલાલ મહેતા (Kantilal Mehta)"
+            "content_text": "Remembering the old alpine hikes we took in Bavaria during my youth. The air was crisp, and we sang folk songs along the trails.",
+            "author_name": "Hans (Munich, Germany)"
         },
         {
             "id": 9988,
             "category": "Handmade & Heirlooms",
-            "content_text": "હાથે ગૂંથેલું આ સ્વેટર મેં મારા પૌત્ર માટે બનાવ્યું છે. વણાટના દરેક તારમાં દાદીનો વહાલ વણાયેલો છે. (I hand-knitted this sweater for my grandson. Grandma's love is woven into every stitch.)",
-            "author_name": "લીલાબેન (Lilaben)"
+            "content_text": "I am teaching my grandchildren the art of Chinese paper cutting for the Lunar New Year. Keeping our traditions alive is a blessing.",
+            "author_name": "Lin (Singapore)"
         },
         {
             "id": 9987,
             "category": "Grandma's Kitchen",
-            "content_text": "રસાદાર ઊંધિયું અને પૂરી! ઉત્તરાયણનો તહેવાર આ પરંપરાગત વાનગી વિના અધૂરો છે. (Juicy Undhiyu and Puri! The festival of Uttarayan is incomplete without this traditional dish.)",
-            "author_name": "ભાનુબેન શાહ (Bhanuben Shah)"
+            "content_text": "Baking fresh Aish Baladi flatbread in our clay oven. The scent of toasted sesame and wheat takes me back to my mother's kitchen.",
+            "author_name": "Fatima (Cairo, Egypt)"
         },
         {
             "id": 9986,
             "category": "Tales from Our Roots",
-            "content_text": "પહેલાના જમાનામાં ટપાલની જે રાહ જોવાતી, તે લાગણી અને ઉત્તેજના આજની ઇન્સ્ટન્ટ મેસેજિંગ એપ્લિકેશન્સમાં ક્યાંય નથી. (Waiting for letters in the past had an emotion and excitement that instant messaging apps simply cannot match.)",
-            "author_name": "પ્રભાશંકર દવે (Prabhashankar Dave)"
+            "content_text": "Remembering the cool ocean breeze at St Kilda beach where my friends and I used to surf every weekend in the 1970s.",
+            "author_name": "Arthur (Melbourne, Australia)"
         },
         {
             "id": 9985,
-            "category": "Handmade & Heirlooms",
-            "content_text": "લીમડાના પાન અને કપૂરની ગોળીઓ અનાજને જીવાતોથી બચાવવા માટેનો બેસ્ટ કુદરતી ઉપાય છે. (Neem leaves and camphor tablets are the best natural way to protect grains from pests.)",
-            "author_name": "નર્મદાબા (Narmadaba)"
+            "category": "Worldwide Stories",
+            "content_text": "Connecting with my mother Maria in Lisbon. Sharing stories across oceans makes the distance feel so small.",
+            "author_name": "Lucas (Dubai, UAE)"
         },
         {
             "id": 9984,
-            "category": "Multilingual Support",
-            "content_text": "આજે મેં મારા પૌત્ર સાથે અંગ્રેજીમાં વાત કરવાનો પ્રયત્ન કર્યો. આ એપના અનુવાદકની મદદથી અમે એકબીજાને વધુ સારી રીતે સમજી શકીએ છીએ! (Today I tried speaking in English with my grandson. With the help of this translator, we understand each other so much better!)",
-            "author_name": "દાદા મુકુંદભાઈ (Mukundbhai)"
+            "category": "Worldwide Stories",
+            "content_text": "Talking to my mother Margaret in Dublin. Seeing her daily logs and hearing her voice reassures me that she is safe and happy.",
+            "author_name": "Thomas (Toronto, Canada)"
         },
         {
             "id": 9983,
-            "category": "Multilingual Support",
-            "content_text": "Learning new words in Gujarati keeps my mind active. Connecting with elders across the language barrier is wonderful.",
-            "author_name": "Hector"
+            "category": "Worldwide Stories",
+            "content_text": "Connecting with elders across different cultures and sharing family traditions is wonderful.",
+            "author_name": "Hector (New York, USA)"
         }
     ]
 

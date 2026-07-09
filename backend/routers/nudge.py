@@ -7,6 +7,7 @@ import google.generativeai as genai
 from database import get_session
 from models import User
 from utils import emit_event
+from services import hindsight_service
 
 router = APIRouter(tags=["nudge"])
 
@@ -45,6 +46,14 @@ def generate_medical_summary(req: MedicalSummaryReq, session: Session = Depends(
     user = session.get(User, req.user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
+
+    # Retain the raw transcript so Hindsight has the full conversation
+    hindsight_service.retain(
+        elder_id=req.user_id,
+        content=f"[Health conversation transcript]: {req.transcript}",
+        elder_name=user.preferred_name or user.name,
+        language=user.language or "en",
+    )
         
     if os.environ.get("GEMINI_API_KEY"):
         try:
@@ -68,6 +77,13 @@ def generate_medical_summary(req: MedicalSummaryReq, session: Session = Depends(
             )
             result = json.loads(response.text)
             emit_event(session, "medical_summary", req.user_id, user.family_group_id, result)
+            # Retain the generated summary in Hindsight
+            hindsight_service.retain(
+                elder_id=req.user_id,
+                content=f"[Medical summary] Chief complaint: {result.get('chief_complaint', '')}. Notes: {result.get('notes', '')}. Red flags: {result.get('red_flags', [])}",
+                elder_name=user.preferred_name or user.name,
+                language=user.language or "en",
+            )
             return result
         except Exception as e:
             print("Gemini API Error for medical summary:", e)

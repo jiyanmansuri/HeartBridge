@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Home as HomeIcon, Mic, Pill, LayoutDashboard, Users, Settings, Bell, Search, HeartPulse, LogOut, Globe, Image as ImageIcon, X } from 'lucide-react'
+import { Home as HomeIcon, Mic, Pill, LayoutDashboard, Users, Settings, Bell, Search, HeartPulse, LogOut, Globe, Image as ImageIcon, X, Cpu } from 'lucide-react'
 import Home from './components/Home'
 import Memories from './components/Memories'
 import Medicine from './components/Medicine'
@@ -13,6 +13,7 @@ import WorldwideCircles from './components/WorldwideCircles'
 import FamilyCircles from './components/FamilyCircles'
 import ElderSettings from './components/ElderSettings'
 import MedicineTracker from './components/MedicineTracker'
+import AiAnalytics from './components/AiAnalytics'
 
 export default function App() {
   const [currentTab, setCurrentTab] = useState('home')
@@ -27,6 +28,7 @@ export default function App() {
   const [appointments, setAppointments] = useState([])
   const [initialCircleCategory, setInitialCircleCategory] = useState(null)
   const [hideBottomNav, setHideBottomNav] = useState(false)
+  const [elder, setElder] = useState(null)
 
   useEffect(() => {
     const handleModalState = (e) => {
@@ -61,7 +63,7 @@ export default function App() {
               tempNotifs.push({
                 id: `med-missed-${m.medicine_id}-${m.scheduled_at}`,
                 type: 'medicine_missed',
-                titleGu: `દવાનો સમય ચૂકી ગયા: ${m.name} (${m.dose})`,
+                titleGu: `Missed medicine: ${m.name} (${m.dose})`,
                 titleEn: `Missed medicine: ${m.name} (${m.dose})`,
                 time: m.scheduled_at,
                 icon: '🚨'
@@ -71,7 +73,7 @@ export default function App() {
               tempNotifs.push({
                 id: `med-due-${m.medicine_id}-${m.scheduled_at}`,
                 type: 'medicine_due',
-                titleGu: `દવા લેવાનો સમય થયો છે: ${m.name} (${m.dose})`,
+                titleGu: `Time to take medicine: ${m.name} (${m.dose})`,
                 titleEn: `Time to take medicine: ${m.name} (${m.dose})`,
                 time: m.scheduled_at,
                 icon: '💊'
@@ -81,7 +83,7 @@ export default function App() {
               tempNotifs.push({
                 id: `med-upcoming-${m.medicine_id}-${m.scheduled_at}`,
                 type: 'medicine_upcoming',
-                titleGu: `આગામી દવાનો સમય: ${m.name} (${m.dose})`,
+                titleGu: `Upcoming medicine: ${m.name} (${m.dose})`,
                 titleEn: `Upcoming medicine reminder: ${m.name} (${m.dose})`,
                 time: m.scheduled_at,
                 icon: '⏰'
@@ -101,7 +103,7 @@ export default function App() {
               tempNotifs.push({
                 id: `${isNudge ? 'nudge' : 'msg'}-${msg.id}`,
                 type: isNudge ? 'nudge' : 'message',
-                titleGu: isNudge ? `ધ્યાન આપો: "${payload.message}"` : `પરિવારનો પ્રેમ: "${payload.message}"`,
+                titleGu: isNudge ? `Attention: "${payload.message}"` : `Family message: "${payload.message}"`,
                 titleEn: isNudge ? `Nudge: "${payload.message}"` : `Family love: "${payload.message}"`,
                 time: msg.created_at,
                 icon: isNudge ? '🔔' : '💬'
@@ -135,6 +137,18 @@ export default function App() {
     }
   }, [])
 
+  useEffect(() => {
+    if (!user) return
+    const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+    fetch(`${API_BASE}/api/auth/users?is_elder=true`)
+      .then(res => res.json())
+      .then(data => {
+        const currentElder = data.find(u => u.family_group_id === user.family_group_id && u.is_elder) || data.find(u => u.is_elder) || data[0]
+        setElder(currentElder)
+      })
+      .catch(err => console.error('Error loading elder info:', err))
+  }, [user])
+
   const elderId = 1 // Default elder user
   const familyGroupId = user?.family_group_id || 1
 
@@ -147,8 +161,8 @@ export default function App() {
     const appt2HHMM = `${String(appt2Time.getHours()).padStart(2, '0')}:${String(appt2Time.getMinutes()).padStart(2, '0')}`
 
     return [
-      { id: 1, title: 'Doctor Checkup', titleGu: 'ડૉક્ટર ચેકઅપ', time: appt1HHMM },
-      { id: 2, title: 'Physiotherapy Session', titleGu: 'ફિઝીયોથેરાપી', time: appt2HHMM }
+      { id: 1, title: 'Doctor Checkup', titleGu: 'Doctor Checkup', time: appt1HHMM },
+      { id: 2, title: 'Physiotherapy Session', titleGu: 'Physiotherapy Session', time: appt2HHMM }
     ]
   }
 
@@ -157,6 +171,23 @@ export default function App() {
       setAppointments(getDynamicAppointments())
     }
   }, [user])
+
+  const getDualTimeText = (dateStr) => {
+    if (!dateStr) return '';
+    const elderTz = elder?.timezone || 'Asia/Kolkata';
+    const familyTz = user?.timezone || 'America/Toronto';
+    const elderLoc = elder?.location?.split(',')[0] || 'Ahmedabad';
+    const familyLoc = user?.location?.split(',')[0] || 'Toronto';
+
+    try {
+      const date = new Date(dateStr);
+      const elderTime = date.toLocaleTimeString([], { timeZone: elderTz, hour: '2-digit', minute: '2-digit', hour12: true });
+      const familyTime = date.toLocaleTimeString([], { timeZone: familyTz, hour: '2-digit', minute: '2-digit', hour12: true });
+      return `${familyTime} ${familyLoc} time / ${elderTime} ${elderLoc} time`;
+    } catch (e) {
+      return new Date(dateStr).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+  };
 
   useEffect(() => {
     if (!user) return
@@ -176,13 +207,13 @@ export default function App() {
             const newAlerts = []
             const newFeedNotifs = []
             emergencyMissed.forEach(m => {
-              const msg = `🚨 EMERGENCY: ${m.name} was not taken! (15+ minutes overdue)`
+              const msg = `🚨 EMERGENCY: ${m.name} was not taken! (15+ minutes overdue) — Overdue since ${getDualTimeText(m.scheduled_at)}`
               newAlerts.push(msg)
               newFeedNotifs.push(msg)
             })
             standardMissed.forEach(m => {
               if (!emergencyMissed.find(em => em.medicine_id === m.medicine_id)) {
-                const msg = `Missed medicine: ${m.name} (${m.dose}) at ${new Date(m.scheduled_at).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}`
+                const msg = `Missed medicine: ${m.name} (${m.dose}) at ${getDualTimeText(m.scheduled_at)}`
                 newAlerts.push(msg)
                 newFeedNotifs.push(msg)
               }
@@ -193,16 +224,17 @@ export default function App() {
               .then(feedData => {
                 feedData.slice(0, 10).forEach(evt => {
                   const payload = JSON.parse(evt.payload)
+                  const dtText = getDualTimeText(evt.created_at);
                   if (evt.event_type === 'memory_recorded') {
-                    newFeedNotifs.push(`📸 New Memory: Recorded "${payload.title}"`)
+                    newFeedNotifs.push(`📸 New Memory: Recorded "${payload.title}" (${dtText})`)
                   } else if (evt.event_type === 'medicine_taken') {
-                    newFeedNotifs.push(`✅ Medicine Taken: Taken "${payload.medicine_name}" (${payload.dose})`)
+                    newFeedNotifs.push(`✅ Medicine Taken: Taken "${payload.medicine_name}" (${payload.dose}) (${dtText})`)
                   } else if (evt.event_type === 'mood_logged') {
-                    newFeedNotifs.push(`😊 Mood Logged: Elder logged feeling "${payload.mood}"`)
+                    newFeedNotifs.push(`😊 Mood Logged: Elder logged feeling "${payload.mood}" (${dtText})`)
                   } else if (evt.event_type === 'photo_uploaded') {
-                    newFeedNotifs.push(`🖼️ Photo Added: Tagged "${payload.event_tag}"`)
+                    newFeedNotifs.push(`🖼️ Photo Added: Tagged "${payload.event_tag}" (${dtText})`)
                   } else if (evt.event_type === 'emergency_alert') {
-                    const msg = `⚠️ ALERT: ${payload.message}`
+                    const msg = `⚠️ ALERT: ${payload.message} (${dtText})`
                     newAlerts.push(msg)
                     newFeedNotifs.push(msg)
                   }
@@ -227,7 +259,7 @@ export default function App() {
       window.removeEventListener('medicine-taken-updated', fetchTodayMedicinesAndFeed)
       clearInterval(interval)
     }
-  }, [elderId, user, familyGroupId])
+  }, [elderId, user, familyGroupId, elder])
 
 
   const handleLoginSuccess = (userData, role) => {
@@ -291,7 +323,7 @@ export default function App() {
               onClick={handleLogout}
               className="bg-red-50/60 hover:bg-red-100/90 border-2 border-red-200/60 text-red-700 text-lg md:text-xl font-bold py-2.5 px-6 rounded-2xl shadow transition-all active:scale-95"
             >
-              બહાર નીકળો (Log Out)
+              "Log Out"
             </button>
           </div>
         </header>
@@ -314,7 +346,7 @@ export default function App() {
                 className={`flex flex-col items-center p-3 rounded-[2rem] transition-all duration-300 ${currentTab === 'home' ? 'bg-[#4F46E5] text-white shadow-md transform scale-110' : 'text-elder-brown hover:bg-white/50'}`}
               >
                 <HomeIcon size={44} strokeWidth={currentTab === 'home' ? 3 : 2} />
-                <span className="font-bold mt-2 text-xl tracking-wide">ઘર (Home)</span>
+                <span className="font-bold mt-2 text-xl tracking-wide">"Home"</span>
               </button>
               
               <button 
@@ -322,7 +354,7 @@ export default function App() {
                 className={`flex flex-col items-center p-3 rounded-[2rem] transition-all duration-300 ${currentTab === 'memories' ? 'bg-[#4F46E5] text-white shadow-md transform scale-110' : 'text-elder-brown hover:bg-white/50'}`}
               >
                 <Mic size={44} strokeWidth={currentTab === 'memories' ? 3 : 2} />
-                <span className="font-bold mt-2 text-xl tracking-wide">યાદો (Memories)</span>
+                <span className="font-bold mt-2 text-xl tracking-wide">"Memories"</span>
               </button>
               
               <button 
@@ -330,7 +362,7 @@ export default function App() {
                 className={`flex flex-col items-center p-3 rounded-[2rem] transition-all duration-300 ${currentTab === 'medicine' ? 'bg-[#4F46E5] text-white shadow-md transform scale-110' : 'text-elder-brown hover:bg-white/50'}`}
               >
                 <Pill size={44} strokeWidth={currentTab === 'medicine' ? 3 : 2} />
-                <span className="font-bold mt-2 text-xl tracking-wide">દવા (Medicine)</span>
+                <span className="font-bold mt-2 text-xl tracking-wide">"Medicine"</span>
               </button>
               
               <button 
@@ -338,7 +370,7 @@ export default function App() {
                 className={`flex flex-col items-center p-3 rounded-[2rem] transition-all duration-300 ${currentTab === 'worldwide' ? 'bg-[#4F46E5] text-white shadow-md transform scale-110' : 'text-elder-brown hover:bg-white/50'}`}
               >
                 <Globe size={44} strokeWidth={currentTab === 'worldwide' ? 3 : 2} />
-                <span className="font-bold mt-2 text-xl tracking-wide">વિશ્વ (World)</span>
+                <span className="font-bold mt-2 text-xl tracking-wide">"World"</span>
               </button>
 
               <button 
@@ -346,7 +378,7 @@ export default function App() {
                 className={`flex flex-col items-center p-3 rounded-[2rem] transition-all duration-300 ${currentTab === 'profile' ? 'bg-[#4F46E5] text-white shadow-md transform scale-110' : 'text-elder-brown hover:bg-white/50'}`}
               >
                 <Settings size={44} strokeWidth={currentTab === 'profile' ? 3 : 2} />
-                <span className="font-bold mt-2 text-xl tracking-wide">પ્રોફાઇલ (Profile)</span>
+                <span className="font-bold mt-2 text-xl tracking-wide">"Profile"</span>
               </button>
             </nav>
           </div>
@@ -373,11 +405,11 @@ export default function App() {
               </button>
 
               <h2 className="text-3xl font-black text-center mb-6 flex items-center justify-center gap-2">
-                <span>🔔</span> નોટિફિકેશન (Notifications)
+                <span>🔔</span> Notifications (Notifications)
               </h2>
 
               {elderNotifications.length === 0 ? (
-                <p className="text-xl text-center text-gray-500 font-bold py-10">કોઈ નવી નોટિફિકેશન નથી.<br/>(No new notifications.)</p>
+                <p className="text-xl text-center text-gray-500 font-bold py-10">No new notifications.</p>
               ) : (
                 <div className="flex flex-col gap-4">
                   {elderNotifications.map((n) => (
@@ -404,7 +436,7 @@ export default function App() {
                 onClick={() => setShowElderNotifications(false)}
                 className="mt-6 w-full bg-[#d9774e] hover:bg-[#c2653e] text-white text-xl font-bold py-3.5 rounded-2xl shadow-md transition-all active:scale-95"
               >
-                બંધ કરો (Close)
+                Close
               </button>
             </div>
           </div>
@@ -442,6 +474,10 @@ export default function App() {
           <button onClick={() => setCurrentView('medicine')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-semibold transition-colors ${currentView === 'medicine' ? 'bg-green-50/80 text-green-700' : 'text-family-muted hover:bg-gray-50'}`}>
             <Pill size={20} />
             Medicines
+          </button>
+          <button onClick={() => setCurrentView('ai_analytics')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-semibold transition-colors ${currentView === 'ai_analytics' ? 'bg-indigo-50/80 text-indigo-700' : 'text-family-muted hover:bg-gray-50'}`}>
+            <Cpu size={20} />
+            AI Engine Console
           </button>
           <button onClick={() => setCurrentView('settings')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-semibold transition-colors ${currentView === 'settings' ? 'bg-family-primary/10 text-family-primary' : 'text-family-muted hover:bg-gray-50'}`}>
             <Settings size={20} />
@@ -515,13 +551,13 @@ export default function App() {
                   Welcome back, {user.name.split(' ')[0]}
                 </h2>
                 <p className="text-family-muted mt-1">
-                  Here is how Ramabai is doing today.
+                  Here is how {elder?.preferred_name || elder?.name || 'Margaret'} is doing today.
                 </p>
               </div>
             </div>
             
             <div className="animate-fade-in">
-              {currentView === 'overview' && <Dashboard familyGroupId={familyGroupId} elderId={elderId} alerts={alerts} setAlerts={setAlerts} setCurrentView={setCurrentView} />}
+              {currentView === 'overview' && <Dashboard familyGroupId={familyGroupId} elderId={elderId} alerts={alerts} setAlerts={setAlerts} setCurrentView={setCurrentView} user={user} />}
               {currentView === 'family' && <FamilyGroup />}
               {currentView === 'settings' && <SettingsView />}
               {currentView === 'memory_nook' && <MemoryNook isFamilyView={true} user={user} elderId={elderId} />}
@@ -537,6 +573,7 @@ export default function App() {
                   <MedicineTracker elderId={elderId} />
                 </div>
               )}
+              {currentView === 'ai_analytics' && <AiAnalytics familyGroupId={familyGroupId} elderId={elderId} />}
             </div>
           </div>
         </main>

@@ -10,6 +10,11 @@ class User(SQLModel, table=True):
     device_token: Optional[str] = None
     is_elder: bool = False
     family_group_id: Optional[int] = None
+    age: Optional[int] = None
+    location: Optional[str] = None
+    conditions: Optional[str] = None
+    relationship: Optional[str] = None
+    timezone: Optional[str] = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
 class FamilyGroup(SQLModel, table=True):
@@ -68,4 +73,18 @@ class CirclePost(SQLModel, table=True):
     category: str
     content_text: str
     media_path: Optional[str] = None
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class RoutingAuditLog(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    elder_id: int
+    task_type: str
+    model_name: str
+    rationale: str
+    cost: float
+    baseline_cost: float
+    latency_ms: int
+    memories_recalled: Optional[str] = None
+    input_text: str
+    response_text: str
     created_at: datetime = Field(default_factory=datetime.utcnow)

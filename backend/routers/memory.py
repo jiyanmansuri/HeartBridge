@@ -9,6 +9,7 @@ import google.generativeai as genai
 from database import get_session
 from models import Memory, User
 from utils import emit_event
+from services import hindsight_service
 
 router = APIRouter(prefix="/api/memory", tags=["memory"])
 
@@ -54,8 +55,7 @@ async def record_memory(
             genai.delete_file(audio_file.name)
             
         except Exception as e:
-            print("Gemini API Error:", e)
-            transcript_text = "હું નાનો હતો ત્યારે અમે ગામડામાં માટીના ચૂલા પર તાજા રોટલા બનાવતા. (When I was young, we used to make fresh rotis on a clay stove in the village.)"
+            transcript_text = "When I was young, we used to make fresh rotis on a clay stove in the village."
             prompt_text = "Wow, that sounds delicious! Who usually cooked the rotis, and did you have a favorite side dish with them?"
             tags_list = ["Childhood", "Food", "Village Life"]
 
@@ -72,6 +72,13 @@ async def record_memory(
     user = session.get(User, user_id)
     if user:
         emit_event(session, "memory_recorded", user_id, user.family_group_id, {"title": memory.title, "tags": tags_list})
+        # Retain transcript in Hindsight so the check-in agent can reference this memory
+        hindsight_service.retain(
+            elder_id=user_id,
+            content=f"[Memory recorded] {memory.title}: {transcript_text}",
+            elder_name=user.preferred_name or user.name,
+            language=user.language or "en",
+        )
         
     session.commit()
     session.refresh(memory)
@@ -96,6 +103,13 @@ def add_text_memory(req: TextMemoryReq, session: Session = Depends(get_session))
     user = session.get(User, req.user_id)
     if user:
         emit_event(session, "memory_recorded", req.user_id, user.family_group_id, {"title": memory.title, "tags": ["Story Prompt", "Written"]})
+        # Retain written memory in Hindsight
+        hindsight_service.retain(
+            elder_id=req.user_id,
+            content=f"[Written memory] {req.title}: {req.transcript}",
+            elder_name=user.preferred_name or user.name,
+            language=user.language or "en",
+        )
     session.commit()
     session.refresh(memory)
     return memory

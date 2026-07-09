@@ -1,7 +1,7 @@
 # 🏛️ HeartBridge
 
 <div align="center">
-  <p><strong>Bridging generations, preserving memories, and caring for our elders.</strong></p>
+  <p><strong>HeartBridge is a daily AI companion for aging parents in India, and a real-time safety net for their adult children living abroad.</strong></p>
   
   [![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com/)
   [![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
@@ -11,7 +11,7 @@
 
 <br />
 
-**HeartBridge** is an intuitive, family-centric platform designed specifically to connect younger generations with their elders. By combining modern AI (Google Gemini) with accessible design, HeartBridge makes it easy to preserve family history, manage daily health routines, and foster meaningful connections across borders and languages.
+**HeartBridge** is a daily AI companion for aging parents in India, and a real-time safety net for their adult children living abroad (US/Canada/UK/Gulf). By combining **Hindsight** persistent memory (for personalized companionship) and **CascadeFlow** cost/model routing (for production efficiency), HeartBridge makes it easy for children living thousands of miles away to care for their parents, manage daily health routines, translate and preserve family memories, and receive dual-timezone alerts if anomalies are detected.
 
 ---
 
